@@ -24,6 +24,12 @@ import { ScrollUtilities } from "./scroll-utilities";
 import { QuizCTA } from "./quiz-cta";
 import { RecentlyViewed } from "./recently-viewed";
 import { SectionDivider } from "./section-divider";
+import { ShopView } from "./shop-view";
+import { FeaturedScentEditorial } from "./featured-scent-editorial";
+import { InstagramGrid } from "./instagram-grid";
+import { WhyScentGrade } from "./why-scent-grade";
+import { ReviewSummary } from "./review-summary";
+import { NewsletterPopup } from "./newsletter-popup";
 import { useRecentlyViewed } from "@/lib/cart-store";
 
 type Brand = { id: string; name: string; slug: string; country: string; description: string; logoColor: string };
@@ -52,7 +58,17 @@ export function HomeClient({
   const [qvOpen, setQvOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [view, setView] = useState<"home" | "shop">("home");
   const addRecentlyViewed = useRecentlyViewed((s) => s.add);
+
+  const openShop = () => {
+    setView("shop");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const openHome = () => {
+    setView("home");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const allProducts = useMemo(() => {
     const map = new Map<string, SerializedProduct>();
@@ -82,59 +98,74 @@ export function HomeClient({
     <div className="flex min-h-screen flex-col">
       <ScrollUtilities />
       <AnnouncementBar />
-      <Header onOpenSearch={() => setSearchOpen(true)} onOpenMobileMenu={() => setMobileOpen(true)} />
+      <Header onOpenSearch={() => setSearchOpen(true)} onOpenMobileMenu={() => setMobileOpen(true)} onShopAll={openShop} onHome={openHome} />
 
       <main className="flex-1">
-        <HeroCarousel featured={featured} />
-        <CategoryShowcase categories={categories} />
-        <div id="products" />
-        <ProductSection
-          eyebrow="New & Trending"
-          title="The Fragrance Frontier"
-          description="The scents everyone's talking about — fresh, modern, and impossible to ignore."
-          products={trending}
-          onQuickView={openQuickView}
-        />
-        <SectionDivider label="Curated Exclusives" />
-        <ProductSection
-          eyebrow="Exclusive Collection"
-          title="Reserved For The Few"
-          description="Limited allocations and house exclusives you won't find anywhere else."
-          products={exclusive}
-          onQuickView={openQuickView}
-          bg="cream"
-        />
-        <BrandMarquee brands={brands} />
-        {extraitProduct && <ExtraitFeature product={extraitProduct} />}
-        <ProductSection
-          eyebrow="Artisanal Perfumes"
-          title="Hand-Crafted Masterpieces"
-          description="Small-batch creations from independent perfumers, each a singular vision."
-          products={artisanal}
-          onQuickView={openQuickView}
-        />
-        <ProductSection
-          eyebrow="Best Sellers"
-          title="Loved By Thousands"
-          description="The fragrances our patrons return for, again and again."
-          products={bestSellers}
-          onQuickView={openQuickView}
-          icon="flame"
-          bg="cream"
-        />
-        <ProductSection
-          eyebrow="Fresh Arrivals"
-          title="Just Landed"
-          description="The newest additions to our curated atelier."
-          products={newArrivals}
-          onQuickView={openQuickView}
-        />
-        <RecentlyViewed allProducts={allProducts} onQuickView={openQuickView} />
-        <QuizCTA />
-        <QuoteSection />
-        <ScentJournal />
-        <Testimonials />
-        <ValueProps />
+        {view === "shop" ? (
+          <ShopView products={allProducts} brands={brands} categories={categories} onQuickView={openQuickView} onBack={openHome} />
+        ) : (
+          <>
+            <HeroCarousel featured={featured} />
+            <CategoryShowcase categories={categories} />
+            <div id="products" />
+            <ProductSection
+              eyebrow="New & Trending"
+              title="The Fragrance Frontier"
+              description="The scents everyone's talking about — fresh, modern, and impossible to ignore."
+              products={trending}
+              onQuickView={openQuickView}
+              onViewAll={openShop}
+            />
+            <SectionDivider label="Curated Exclusives" />
+            <ProductSection
+              eyebrow="Exclusive Collection"
+              title="Reserved For The Few"
+              description="Limited allocations and house exclusives you won't find anywhere else."
+              products={exclusive}
+              onQuickView={openQuickView}
+              bg="cream"
+              onViewAll={openShop}
+            />
+            <BrandMarquee brands={brands} />
+            {extraitProduct && <ExtraitFeature product={extraitProduct} />}
+            <ProductSection
+              eyebrow="Artisanal Perfumes"
+              title="Hand-Crafted Masterpieces"
+              description="Small-batch creations from independent perfumers, each a singular vision."
+              products={artisanal}
+              onQuickView={openQuickView}
+              onViewAll={openShop}
+            />
+            <ProductSection
+              eyebrow="Best Sellers"
+              title="Loved By Thousands"
+              description="The fragrances our patrons return for, again and again."
+              products={bestSellers}
+              onQuickView={openQuickView}
+              icon="flame"
+              bg="cream"
+              onViewAll={openShop}
+            />
+            <ProductSection
+              eyebrow="Fresh Arrivals"
+              title="Just Landed"
+              description="The newest additions to our curated atelier."
+              products={newArrivals}
+              onQuickView={openQuickView}
+              onViewAll={openShop}
+            />
+            <FeaturedScentEditorial product={featured[1] ?? bestSellers[1] ?? trending[1]} />
+            <RecentlyViewed allProducts={allProducts} onQuickView={openQuickView} />
+            <QuizCTA />
+            <ReviewSummary />
+            <QuoteSection />
+            <ScentJournal />
+            <InstagramGrid />
+            <Testimonials />
+            <WhyScentGrade />
+            <ValueProps />
+          </>
+        )}
       </main>
 
       <Footer />
@@ -152,6 +183,7 @@ export function HomeClient({
       />
       <FragranceQuiz products={allProducts} />
       <LiveChat />
+      <NewsletterPopup />
     </div>
   );
 }

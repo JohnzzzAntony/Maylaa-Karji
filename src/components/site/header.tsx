@@ -25,9 +25,13 @@ const SHOP_MENU = [
 export function Header({
   onOpenSearch,
   onOpenMobileMenu,
+  onShopAll,
+  onHome,
 }: {
   onOpenSearch: () => void;
   onOpenMobileMenu: () => void;
+  onShopAll: () => void;
+  onHome: () => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -61,7 +65,7 @@ export function Header({
         </button>
 
         {/* Logo */}
-        <a href="/" className="flex items-center gap-2.5 shrink-0">
+        <button onClick={onHome} className="flex items-center gap-2.5 shrink-0 cursor-pointer">
           <div className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-gold">
             <span className="font-serif text-lg font-bold text-gold">SG</span>
           </div>
@@ -69,7 +73,7 @@ export function Header({
             <span className="font-serif text-xl font-semibold tracking-wide text-foreground">ScentGrade</span>
             <span className="text-[9px] font-medium uppercase tracking-[0.3em] text-muted-foreground">Curated Fragrance</span>
           </div>
-        </a>
+        </button>
 
         {/* Nav */}
         <nav className="hidden flex-1 items-center justify-center lg:flex">
@@ -80,6 +84,7 @@ export function Header({
               onMouseEnter={() => setOpenMenu(item.hasMenu ? item.label : null)}
             >
               <button
+                onClick={() => item.label === "Shop All" && onShopAll()}
                 className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-foreground/80 transition hover:text-gold"
               >
                 {item.label}

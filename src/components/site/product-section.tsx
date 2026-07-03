@@ -12,6 +12,7 @@ export function ProductSection({
   description,
   products,
   onQuickView,
+  onViewAll,
   icon,
   bg = "default",
   cta = "View All",
@@ -22,6 +23,7 @@ export function ProductSection({
   description?: string;
   products: SerializedProduct[];
   onQuickView?: (p: SerializedProduct) => void;
+  onViewAll?: () => void;
   icon?: "flame" | "default";
   bg?: "default" | "cream";
   cta?: string;
@@ -61,13 +63,15 @@ export function ProductSection({
               </motion.p>
             )}
           </div>
-          <a
-            href="#products"
-            className="group inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-foreground transition hover:text-gold"
-          >
-            {cta}
-            <ArrowRight size={14} className="transition group-hover:translate-x-1" />
-          </a>
+          {onViewAll && (
+            <button
+              onClick={onViewAll}
+              className="group inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-foreground transition hover:text-gold"
+            >
+              {cta}
+              <ArrowRight size={14} className="transition group-hover:translate-x-1" />
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
