@@ -1,0 +1,99 @@
+// ScentGrade Luxury Perfume E-Commerce Schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Brand {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  country     String
+  description String
+  logoColor   String   @default("#B8935A")
+  createdAt   DateTime @default(now())
+  products    Product[]
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  products    Product[]
+}
+
+model Product {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  brandId        String
+  categoryId     String
+  description    String
+  longDescription String
+  price          Float
+  compareAtPrice Float?
+  currency       String   @default("AED")
+  size           Int      @default(100)
+  sizeUnit       String   @default("ml")
+  concentration  String   @default("Eau de Parfum")
+  topNotes       String
+  heartNotes     String
+  baseNotes      String
+  images         String   // JSON array of image paths
+  rating         Float    @default(4.5)
+  reviewCount    Int      @default(0)
+  stock          Int      @default(50)
+  sku            String   @unique
+  badge          String?
+  gender         String   @default("Unisex")
+  isTrending     Boolean  @default(false)
+  isExclusive    Boolean  @default(false)
+  isBestSeller   Boolean  @default(false)
+  isArtisanal    Boolean  @default(false)
+  isFeatured     Boolean  @default(false)
+  isNew          Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  brand          Brand    @relation(fields: [brandId], references: [id])
+  category       Category @relation(fields: [categoryId], references: [id])
+  reviews        Review[]
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  author    String
+  rating    Int
+  title     String
+  content   String
+  verified  Boolean  @default(true)
+  location  String?
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id           String   @id @default(cuid())
+  email        String
+  customerName String
+  items        String   // JSON array
+  subtotal     Float
+  shipping     Float
+  total        Float
+  currency     String   @default("AED")
+  status       String   @default("pending")
+  address      String   // JSON
+  createdAt    DateTime @default(now())
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
