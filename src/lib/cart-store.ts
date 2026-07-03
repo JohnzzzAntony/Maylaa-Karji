@@ -76,3 +76,39 @@ export const useWishlist = create<WishlistState>()(
     { name: "scentgrade-wishlist" }
   )
 );
+
+// Recently viewed store
+type RecentlyViewedState = {
+  ids: string[];
+  add: (id: string) => void;
+  clear: () => void;
+};
+
+export const useRecentlyViewed = create<RecentlyViewedState>()(
+  persist(
+    (set, get) => ({
+      ids: [],
+      add: (id) => {
+        const filtered = get().ids.filter((x) => x !== id);
+        set({ ids: [id, ...filtered].slice(0, 8) });
+      },
+      clear: () => set({ ids: [] }),
+    }),
+    { name: "scentgrade-recently-viewed" }
+  )
+);
+
+// UI store for global overlays (quiz, chat)
+type UIState = {
+  quizOpen: boolean;
+  chatOpen: boolean;
+  setQuizOpen: (v: boolean) => void;
+  setChatOpen: (v: boolean) => void;
+};
+
+export const useUI = create<UIState>((set) => ({
+  quizOpen: false,
+  chatOpen: false,
+  setQuizOpen: (v) => set({ quizOpen: v }),
+  setChatOpen: (v) => set({ chatOpen: v }),
+}));

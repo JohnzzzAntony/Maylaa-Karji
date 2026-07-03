@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, ShoppingBag, Heart, User, Menu, X, ChevronDown } from "lucide-react";
-import { useCart, useWishlist } from "@/lib/cart-store";
+import { Search, ShoppingBag, Heart, User, Menu, X, ChevronDown, Sparkles } from "lucide-react";
+import { useCart, useWishlist, useUI } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -34,6 +34,7 @@ export function Header({
   const count = useCart((s) => s.count());
   const setOpen = useCart((s) => s.setOpen);
   const wishCount = useWishlist((s) => s.ids.length);
+  const setQuizOpen = useUI((s) => s.setQuizOpen);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -118,6 +119,13 @@ export function Header({
 
         {/* Actions */}
         <div className="flex items-center gap-1 ml-auto lg:ml-0">
+          <button
+            onClick={() => setQuizOpen(true)}
+            className="hidden items-center gap-1.5 rounded-full border border-gold/40 bg-gold/5 px-3.5 py-2 text-[11px] font-semibold uppercase tracking-wider text-gold transition hover:bg-gold hover:text-white md:flex"
+            aria-label="Take fragrance quiz"
+          >
+            <Sparkles size={13} /> Find Your Scent
+          </button>
           <button
             onClick={onOpenSearch}
             className="grid h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent"

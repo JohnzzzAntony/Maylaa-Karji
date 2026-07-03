@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { SerializedProduct } from "@/lib/data";
 import { AnnouncementBar } from "./announcement-bar";
 import { Header } from "./header";
@@ -18,6 +18,13 @@ import { CartDrawer } from "./cart-drawer";
 import { SearchDialog } from "./search-dialog";
 import { MobileMenu } from "./mobile-menu";
 import { ProductQuickView } from "./product-quick-view";
+import { FragranceQuiz } from "./fragrance-quiz";
+import { LiveChat } from "./live-chat";
+import { ScrollUtilities } from "./scroll-utilities";
+import { QuizCTA } from "./quiz-cta";
+import { RecentlyViewed } from "./recently-viewed";
+import { SectionDivider } from "./section-divider";
+import { useRecentlyViewed } from "@/lib/cart-store";
 
 type Brand = { id: string; name: string; slug: string; country: string; description: string; logoColor: string };
 type Category = { id: string; name: string; slug: string; description: string; image: string };
@@ -45,16 +52,24 @@ export function HomeClient({
   const [qvOpen, setQvOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const addRecentlyViewed = useRecentlyViewed((s) => s.add);
 
-  const allProducts = useMemo(
-    () => [...trending, ...newArrivals, ...exclusive, ...bestSellers, ...artisanal, ...featured],
-    [trending, newArrivals, exclusive, bestSellers, artisanal, featured]
-  );
+  const allProducts = useMemo(() => {
+    const map = new Map<string, SerializedProduct>();
+    [...trending, ...newArrivals, ...exclusive, ...bestSellers, ...artisanal, ...featured].forEach((p) => map.set(p.id, p));
+    return Array.from(map.values());
+  }, [trending, newArrivals, exclusive, bestSellers, artisanal, featured]);
 
   const openQuickView = (p: SerializedProduct) => {
     setQuickView(p);
     setQvOpen(true);
+    addRecentlyViewed(p.id);
   };
+
+  // Track when quick view opens
+  useEffect(() => {
+    if (quickView) addRecentlyViewed(quickView.id);
+  }, [quickView, addRecentlyViewed]);
 
   const related = useMemo(() => {
     if (!quickView) return [];
@@ -65,6 +80,7 @@ export function HomeClient({
 
   return (
     <div className="flex min-h-screen flex-col">
+      <ScrollUtilities />
       <AnnouncementBar />
       <Header onOpenSearch={() => setSearchOpen(true)} onOpenMobileMenu={() => setMobileOpen(true)} />
 
@@ -79,6 +95,7 @@ export function HomeClient({
           products={trending}
           onQuickView={openQuickView}
         />
+        <SectionDivider label="Curated Exclusives" />
         <ProductSection
           eyebrow="Exclusive Collection"
           title="Reserved For The Few"
@@ -112,6 +129,8 @@ export function HomeClient({
           products={newArrivals}
           onQuickView={openQuickView}
         />
+        <RecentlyViewed allProducts={allProducts} onQuickView={openQuickView} />
+        <QuizCTA />
         <QuoteSection />
         <ScentJournal />
         <Testimonials />
@@ -131,6 +150,8 @@ export function HomeClient({
         onQuickView={openQuickView}
         related={related}
       />
+      <FragranceQuiz products={allProducts} />
+      <LiveChat />
     </div>
   );
 }
