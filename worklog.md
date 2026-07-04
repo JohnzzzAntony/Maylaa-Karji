@@ -155,3 +155,54 @@ Unresolved / next-phase priorities:
 - Shop view brand-filter checkbox click needs refinement in automation (renders but ref capture was tricky) — verify manually
 - Could add: country/currency selector, full PDP (upgrade quick view with reviews list + photo reviews), blog post detail modal, gift card / discovery set dedicated sections, account login/register modal
 - Newsletter popup currently fires once per localStorage clear — consider re-trigger cadence
+
+---
+Task ID: 12
+Agent: main
+Task: Build complete backend admin panel with all modules from uploaded screenshot (Dashboard, Banner, BOGO Offer, Advertisement, Catalog, Sales, Customers, Promotions, CMS, Configuration)
+
+Work Log:
+- Analyzed uploaded admin panel screenshot via VLM — identified 10 top-nav modules: Dashboard, Banner, BOGO Offer, Advertisement, Catalog, Sales, Customers, Promotions, CMS, Configuration with brown/tan gradient nav bar
+- Extended Prisma schema with 6 new models: Banner, BogoOffer, Advertisement, Promotion, CmsPage, ConfigSetting — pushed to DB + regenerated client
+- Built 10 admin API routes (all CRUD): /api/admin/{dashboard,products,orders,customers,banners,bogo,advertisements,promotions,cms,config} — each with GET/POST/PUT/DELETE as appropriate
+- Seeded admin data: 14 config settings (general/shipping/payment/tax groups), 3 banners, 3 promo codes (JULY4, WELCOME10, FREESHIP), 1 BOGO offer, 2 advertisements, 6 CMS pages (About/FAQ/Policies), 4 sample orders with customers
+- Built admin shell (admin-panel.tsx): brown/tan gradient top nav bar matching screenshot, 10 module buttons with lucide icons + active underline indicator, search/bell/exit actions, animated module switching via Framer Motion AnimatePresence, dark footer
+- Built shared admin UI kit (admin-ui.tsx): AdminPage, AdminCard, StatCard, AdminButton, AdminBadge, AdminInput, AdminTextarea, AdminSelect, AdminToggle, AdminTable, useFetch hook
+- Built all 10 module views:
+  * admin-dashboard: 8 KPI stat cards (revenue/orders/products/customers/subscribers/reviews/banners/promotions), 7-day revenue bar chart, order-status breakdown bars, recent orders list, top products list, low-stock alert
+  * admin-catalog: searchable product table with image/name/SKU/price/stock/badges/status, Add Product dialog with full form (name/brand/category/descriptions/notes/images/price/stock/badges/6 toggle flags), edit + delete
+  * admin-sales: status filter tabs (all/pending/confirmed/shipped/delivered/cancelled), 4 stat cards, orders table with inline status dropdown updater
+  * admin-customers: 4 stat cards, tabbed view (customers with order count + total spent / newsletter subscribers with avatars)
+  * admin-banners: visual card grid with image previews, Add/Edit dialog (title/subtitle/image/link/position/sortOrder/active toggle)
+  * admin-bogo: offers table (buy/get qty, discount %, end date), Add/Edit dialog
+  * admin-advertisements: card grid with image previews, placement badges, Add/Edit dialog
+  * admin-promotions: promo codes table with copy-to-clipboard code chips, usage tracking, type badges, Add/Edit dialog
+  * admin-cms: pages table (title/slug/published status/updated), Add/Edit dialog with content textarea
+  * admin-config: grouped settings (general/shipping/payment/tax tabs), inline edit with save-all button, add-new-setting form
+- Wired admin entry: page.tsx checks ?admin=1 searchParam → renders AdminPanel (no onExit function prop to avoid server/client boundary error; admin handles exit via window.location.href)
+- Fixed Prisma client issue: regenerated after schema push + server restart to pick up new models
+- Fixed lint: react-hooks/set-state-in-effect in admin-sales via useCallback pattern
+- Verification via agent-browser:
+  * Admin route /?admin=1 returns HTTP 200
+  * All 10 nav modules present and clickable (Dashboard/Banner/BOGO/Ad/Catalog/Sales/Customers/Promotions/CMS/Config)
+  * Dashboard renders KPIs: "TOTAL REVENUE Dhs. 1,185.00", "PRODUCTS", "CUSTOMERS" + Revenue chart + Order Status + Recent Orders + Top Products sections
+  * Catalog shows "12 products in your store" with Add Product button and product table (Future Oud etc.)
+  * All 10 admin APIs return HTTP 200
+  * Lint clean (0 errors)
+  * Exit Admin button returns to storefront
+
+Stage Summary:
+- Complete backend admin panel with all 10 modules from the screenshot, fully integrated with the storefront database
+- Full CRUD for products, banners, BOGO offers, advertisements, promotions, CMS pages, and config settings
+- Dashboard with real analytics (revenue, orders, customers, charts, top products, low-stock alerts)
+- Order management with status updates
+- Customer/subscriber management
+- Accessible at /?admin=1 — brown/tan top nav matching the reference screenshot
+- Storefront remains fully functional at / (admin is additive)
+- Lint clean, all APIs verified, dev server running
+
+Unresolved / next-phase priorities:
+- Add admin authentication (currently open access via ?admin=1)
+- Wire banner/BOGO/ad/promo data into the storefront display (currently admin-managed but not yet rendered on storefront)
+- Add image upload (currently image paths entered as text)
+- Add export/reports (CSV/PDF) for orders and customers

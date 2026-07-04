@@ -97,3 +97,82 @@ model NewsletterSubscriber {
   email     String   @unique
   createdAt DateTime @default(now())
 }
+
+// ===== Admin modules =====
+
+model Banner {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String
+  image     String
+  link      String   @default("#")
+  position  String   @default("hero") // hero | mid | footer
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model BogoOffer {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  buyProductId  String?
+  buyQty        Int      @default(1)
+  getProductId  String?
+  getQty        Int      @default(1)
+  discountPct   Int      @default(100)
+  isActive      Boolean  @default(true)
+  startsAt      DateTime @default(now())
+  endsAt        DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Advertisement {
+  id        String   @id @default(cuid())
+  title     String
+  image     String
+  link      String   @default("#")
+  placement String   @default("sidebar") // sidebar | inline | popup
+  isActive  Boolean  @default(true)
+  clicks    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Promotion {
+  id          String   @id @default(cuid())
+  title       String
+  code        String   @unique
+  type        String   @default("percent") // percent | fixed | shipping
+  value       Float    @default(10)
+  minSpend    Float    @default(0)
+  usageLimit  Int      @default(100)
+  usedCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  startsAt    DateTime @default(now())
+  endsAt      DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CmsPage {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  content   String
+  isPublished Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ConfigSetting {
+  id    String @id @default(cuid())
+  key   String @unique
+  value String
+  label String
+  group String @default("general") // general | shipping | payment | tax
+  updatedAt DateTime @updatedAt
+}
+
