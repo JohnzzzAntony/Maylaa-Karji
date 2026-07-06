@@ -2,7 +2,7 @@
 
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useCart } from "@/lib/cart-store";
-import { X, Minus, Plus, ShoppingBag, Trash2, Lock, Truck, RotateCcw } from "lucide-react";
+import { X, Minus, Plus, ShoppingBag, Trash2, Lock, Truck, RotateCcw, Tag } from "lucide-react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import { useState } from "react";
@@ -11,14 +11,31 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const FREE_SHIP_THRESHOLD = 500;
 
-export function CartDrawer() {
+export function CartDrawer({ promos = [] }: { promos?: { id: string; code: string; type: string; value: number; minSpend: number }[] }) {
   const { items, isOpen, setOpen, removeItem, updateQty, subtotal, clear } = useCart();
   const [checkingOut, setCheckingOut] = useState(false);
   const [done, setDone] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{ code: string; type: string; value: number; minSpend: number } | null>(null);
 
   const sub = subtotal();
   const shipping = sub >= FREE_SHIP_THRESHOLD || sub === 0 ? 0 : 35;
-  const total = sub + shipping;
+  let discount = 0;
+  if (appliedPromo) {
+    if (appliedPromo.type === "percent") discount = (sub * appliedPromo.value) / 100;
+    else if (appliedPromo.type === "fixed") discount = Math.min(appliedPromo.value, sub);
+    else if (appliedPromo.type === "shipping") discount = shipping;
+  }
+  const total = Math.max(0, sub + shipping - discount);
+
+  const applyCoupon = () => {
+    const code = couponCode.trim().toUpperCase();
+    const promo = promos.find((p) => p.code.toUpperCase() === code);
+    if (!promo) { toast.error("Invalid promo code"); return; }
+    if (sub < promo.minSpend) { toast.error(`Minimum spend of ${formatPrice(promo.minSpend)} required`); return; }
+    setAppliedPromo(promo);
+    toast.success(`Promo ${promo.code} applied!`);
+  };
   const remaining = Math.max(0, FREE_SHIP_THRESHOLD - sub);
 
   const checkout = async () => {
@@ -161,11 +178,14 @@ export function CartDrawer() {
 
             {/* Summary */}
             <div className="border-t border-border bg-cream/30 px-5 py-4 space-y-3">
-              <div className="flex justify-between text-sm">
+              <div className="flex gap-2"><div className="relative flex-1"><Tag size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" /><input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} onKeyDown={(e) => e.key === "Enter" && applyCoupon()} placeholder="Promo code" className="w-full rounded-lg border border-border bg-background py-2.5 pl-9 pr-3 text-sm uppercase outline-none transition focus:border-gold" /></div><button onClick={applyCoupon} className="rounded-lg border border-border px-4 text-xs font-semibold uppercase tracking-wider transition hover:border-gold hover:text-gold">Apply</button></div>
+            {appliedPromo && (<div className="flex items-center justify-between rounded-lg bg-emerald-50 px-3 py-2 text-xs"><span className="font-medium text-emerald-700">{appliedPromo.code} applied</span><button onClick={() => { setAppliedPromo(null); setCouponCode(""); }} className="text-emerald-700/60 hover:text-emerald-700"><X size={13} /></button></div>)}
+            <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-medium">{formatPrice(sub)}</span>
               </div>
-              <div className="flex justify-between text-sm">
+              {discount > 0 && (<div className="flex justify-between text-sm text-emerald-700"><span>Discount</span><span className="font-medium">-{formatPrice(discount)}</span></div>)}
+            <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
                 <span className="font-medium">{shipping === 0 ? "Free" : formatPrice(shipping)}</span>
               </div>

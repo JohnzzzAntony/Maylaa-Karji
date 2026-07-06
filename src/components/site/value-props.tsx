@@ -14,7 +14,7 @@ export function ValueProps() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
       <div className="mb-12 text-center">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">The ScentGrade Promise</span>
+        <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">The The House Of Karji Promise</span>
         <h2 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">Why Connoisseurs Choose Us</h2>
       </div>
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

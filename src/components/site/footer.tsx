@@ -21,7 +21,14 @@ const LINKS = [
   { title: "About", links: ["Our Story", "Sustainability", "Careers", "Press", "Wholesale", "Affiliates"] },
 ];
 
-export function Footer() {
+export function Footer({ onNavigate, onOpenCms }: { onNavigate?: (s: string) => void; onOpenCms?: (slug: string) => void }) {
+  const handleLink = (label: string) => {
+    const cmsSlugs = ["faq", "shipping-policy", "return-refund-policy", "about-us", "terms-of-service", "privacy-policy"];
+    const slugMap: Record<string,string> = { "Contact Us": "faq", "Shipping & Returns": "shipping-policy", "Return & Refund": "return-refund-policy", "FAQ": "faq", "Our Story": "about-us", "Terms of Service": "terms-of-service", "Privacy Policy": "privacy-policy", "New Arrivals": "new", "Bestsellers": "bestsellers", "Exclusive": "exclusive", "Artisanal": "artisanal", "Gift Cards": "gift" };
+    const target = slugMap[label];
+    if (target && cmsSlugs.includes(target) && onOpenCms) onOpenCms(target);
+    else if (target && onNavigate) onNavigate(target);
+  };
   const [email, setEmail] = useState("");
 
   const subscribe = async () => {
@@ -31,7 +38,7 @@ export function Footer() {
     }
     try {
       await fetch("/api/newsletter", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email }) });
-      toast.success("Welcome to ScentGrade! Check your inbox for 10% off.");
+      toast.success("Welcome to The House Of Karji! Check your inbox for 10% off.");
       setEmail("");
     } catch {
       toast.error("Subscription failed. Try again.");
@@ -98,7 +105,7 @@ export function Footer() {
                 <span className="font-serif text-lg font-bold text-gold">SG</span>
               </div>
               <div className="flex flex-col leading-none">
-                <span className="font-serif text-xl font-semibold">ScentGrade</span>
+                <span className="font-serif text-xl font-semibold">The House Of Karji</span>
                 <span className="text-[9px] uppercase tracking-[0.3em] text-white/40">Curated Fragrance</span>
               </div>
             </a>
@@ -148,7 +155,7 @@ export function Footer() {
       {/* Payments + Copyright */}
       <div className="border-t border-white/10">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 lg:flex-row lg:px-8">
-          <p className="text-xs text-white/40">© {new Date().getFullYear()} ScentGrade. All rights reserved. Crafted with passion in Dubai.</p>
+          <p className="text-xs text-white/40">© {new Date().getFullYear()} The House Of Karji. All rights reserved. Crafted with passion in Dubai.</p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             {PAYMENTS.map((p) => (
               <span key={p} className="rounded-md border border-white/15 bg-white/5 px-2.5 py-1 text-[10px] font-semibold text-white/70">

@@ -31,7 +31,7 @@ const KB: Array<{ keywords: string[]; answer: string }> = [
   },
   {
     keywords: ["return", "refund", "exchange", "policy"],
-    answer: "We offer a 30-day, no-questions-asked return policy on unopened bottles. Even opened fragrances can be returned within 14 days if you're not completely satisfied — that's our ScentGrade Guarantee. Refunds process within 5–7 business days.",
+    answer: "We offer a 30-day, no-questions-asked return policy on unopened bottles. Even opened fragrances can be returned within 14 days if you're not completely satisfied — that's our The House Of Karji Guarantee. Refunds process within 5–7 business days.",
   },
   {
     keywords: ["saffron", "velvet saffron"],
@@ -55,7 +55,7 @@ const KB: Array<{ keywords: string[]; answer: string }> = [
   },
   {
     keywords: ["hello", "hi", "hey", "greetings"],
-    answer: "Hello, and welcome to ScentGrade! I'm your personal fragrance concierge. I can help you discover scents, answer questions about shipping or returns, or guide you to the perfect gift. What can I help you with today?",
+    answer: "Hello, and welcome to The House Of Karji! I'm your personal fragrance concierge. I can help you discover scents, answer questions about shipping or returns, or guide you to the perfect gift. What can I help you with today?",
   },
 ];
 
@@ -77,7 +77,7 @@ function findAnswer(query: string): string {
 export function LiveChat() {
   const { chatOpen, setChatOpen } = useUI();
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "bot", text: "Welcome to ScentGrade! I'm Aria, your personal fragrance concierge. How may I assist you today?", ts: Date.now() },
+    { role: "bot", text: "Welcome to The House Of Karji! I'm Aria, your personal fragrance concierge. How may I assist you today?", ts: Date.now() },
   ]);
   const [input, setInput] = useState("");
   const [typing, setTyping] = useState(false);

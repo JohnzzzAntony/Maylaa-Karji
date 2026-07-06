@@ -1,4 +1,5 @@
 import { getAllProducts, getBrands, getCategories } from "@/lib/data";
+import { db } from "@/lib/db";
 import { HomeClient } from "@/components/site/home-client";
 import { AdminPanel } from "@/components/admin/admin-panel";
 
@@ -10,7 +11,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
     return <AdminPanel />;
   }
 
-  const [trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories] = await Promise.all([
+  const [trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories, promos] = await Promise.all([
     getAllProducts({ trending: true, limit: 8 }),
     getAllProducts({ isNew: true, limit: 8 }),
     getAllProducts({ exclusive: true, limit: 8 }),
@@ -19,6 +20,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
     getAllProducts({ featured: true, limit: 8 }),
     getBrands(),
     getCategories(),
+    db.promotion.findMany({ where: { isActive: true }, select: { id: true, code: true, type: true, value: true, minSpend: true } }),
   ]);
 
   return (
@@ -31,6 +33,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
       featured={featured}
       brands={brands}
       categories={categories}
+      promos={promos}
     />
   );
 }

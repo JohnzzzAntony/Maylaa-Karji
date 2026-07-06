@@ -19,22 +19,22 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "ScentGrade — Curated Luxury Fragrances | Premium Perfume Atelier",
+  title: "The House Of Karji — Curated Luxury Fragrances | Premium Perfume Atelier",
   description: "Discover curated luxury fragrances from the world's finest perfume houses. Authentic parfum, extrait de parfum, and artisanal scents with secure worldwide shipping.",
-  keywords: ["luxury perfume", "fragrance", "parfum", "extrait de parfum", "oud", "niche perfume", "ScentGrade"],
-  authors: [{ name: "ScentGrade" }],
+  keywords: ["luxury perfume", "fragrance", "parfum", "extrait de parfum", "oud", "niche perfume", "The House Of Karji"],
+  authors: [{ name: "The House Of Karji" }],
   icons: {
     icon: "/logo.svg",
   },
   openGraph: {
-    title: "ScentGrade — Curated Luxury Fragrances",
+    title: "The House Of Karji — Curated Luxury Fragrances",
     description: "Premium parfum, extrait de parfum & artisanal scents from the world's finest houses.",
-    siteName: "ScentGrade",
+    siteName: "The House Of Karji",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ScentGrade — Curated Luxury Fragrances",
+    title: "The House Of Karji — Curated Luxury Fragrances",
     description: "Premium parfum, extrait de parfum & artisanal scents.",
   },
 };

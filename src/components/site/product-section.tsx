@@ -13,6 +13,7 @@ export function ProductSection({
   products,
   onQuickView,
   onViewAll,
+  onViewProduct,
   icon,
   bg = "default",
   cta = "View All",
@@ -24,6 +25,7 @@ export function ProductSection({
   products: SerializedProduct[];
   onQuickView?: (p: SerializedProduct) => void;
   onViewAll?: () => void;
+  onViewProduct?: (p: SerializedProduct) => void;
   icon?: "flame" | "default";
   bg?: "default" | "cream";
   cta?: string;
@@ -76,7 +78,7 @@ export function ProductSection({
 
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
           {products.slice(0, 8).map((p, i) => (
-            <ProductCard key={p.id} product={p} onQuickView={onQuickView} index={i} />
+            <ProductCard key={p.id} product={p} onQuickView={onQuickView} onViewProduct={onViewProduct} index={i} />
           ))}
         </div>
       </div>

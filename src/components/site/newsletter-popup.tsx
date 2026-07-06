@@ -88,7 +88,7 @@ export function NewsletterPopup() {
                   <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }} className="grid h-16 w-16 place-items-center rounded-full bg-emerald-deep/10">
                     <Check size={28} className="text-emerald-deep" />
                   </motion.div>
-                  <h3 className="mt-4 font-serif text-2xl font-semibold">Welcome to ScentGrade</h3>
+                  <h3 className="mt-4 font-serif text-2xl font-semibold">Welcome to The House Of Karji</h3>
                   <p className="mt-2 text-sm text-muted-foreground">Check your inbox for your 10% off code.</p>
                 </motion.div>
               ) : (

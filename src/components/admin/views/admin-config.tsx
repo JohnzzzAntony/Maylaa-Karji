@@ -102,7 +102,7 @@ export function AdminConfig() {
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-4">
           <AdminInput label="Key" value={newKey} onChange={setNewKey} placeholder="store_name" />
           <AdminInput label="Label" value={newLabel} onChange={setNewLabel} placeholder="Store Name" />
-          <AdminInput label="Value" value={newValue} onChange={setNewValue} placeholder="ScentGrade" />
+          <AdminInput label="Value" value={newValue} onChange={setNewValue} placeholder="The House Of Karji" />
           <div className="flex items-end">
             <AdminButton variant="amber" onClick={addSetting} className="w-full justify-center"><Plus size={14} /> Add</AdminButton>
           </div>

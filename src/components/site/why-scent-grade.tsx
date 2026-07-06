@@ -16,7 +16,7 @@ export function WhyScentGrade() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-12 text-center">
           <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">The Difference</span>
-          <h2 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">Why Scent Grade?</h2>
+          <h2 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">Why The House Of Karji?</h2>
         </div>
         <div className="grid gap-px overflow-hidden rounded-2xl border border-border bg-border sm:grid-cols-2">
           {POINTS.map((p, i) => (

@@ -14,10 +14,12 @@ import { cn } from "@/lib/utils";
 export function ProductCard({
   product,
   onQuickView,
+  onViewProduct,
   index = 0,
 }: {
   product: SerializedProduct;
   onQuickView?: (p: SerializedProduct) => void;
+  onViewProduct?: (p: SerializedProduct) => void;
   index?: number;
 }) {
   const addItem = useCart((s) => s.addItem);
@@ -76,7 +78,7 @@ export function ProductCard({
 
         {/* Image */}
         <button
-          onClick={() => onQuickView?.(product)}
+          onClick={() => (onViewProduct ? onViewProduct(product) : onQuickView?.(product))}
           className="relative h-full w-full"
           aria-label={`View ${product.name}`}
         >
@@ -154,7 +156,7 @@ export function ProductCard({
           <StarRating rating={product.rating} count={product.reviewCount} />
         </div>
         <button
-          onClick={() => onQuickView?.(product)}
+          onClick={() => (onViewProduct ? onViewProduct(product) : onQuickView?.(product))}
           className="font-serif text-lg font-medium leading-tight text-foreground transition hover:text-gold text-left"
         >
           {product.name}

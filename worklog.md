@@ -206,3 +206,82 @@ Unresolved / next-phase priorities:
 - Wire banner/BOGO/ad/promo data into the storefront display (currently admin-managed but not yet rendered on storefront)
 - Add image upload (currently image paths entered as text)
 - Add export/reports (CSV/PDF) for orders and customers
+
+---
+Task ID: IMG-2
+Agent: image-generation
+Task: Generate 8 additional luxury perfume product images to complete the 20-product catalog (supplement existing 12)
+
+Work Log:
+- Read project context from worklog.md (ScentGrade / "The House Of Karji" luxury perfume e-commerce, ivory/charcoal/gold aesthetic, 12 existing product images at /public/images/products/)
+- Confirmed existing 12 product images present (future-oud, rose-noir, velvet-saffron, amber-royale, midnight-oud, white-musk, citrus-royale, patchouli-noir, jasmine-supreme, leather-oud, vanilla-orchid, cedar-mystique)
+- Verified z-ai CLI available at /usr/local/bin/z-ai; image subcommand syntax: `-p <prompt> -o <output> -s <size>` (default 1024x1024)
+- Created sequential retry helper at /home/z/my-project/scripts/gen_image_retry.sh — 3 attempts, 5s backoff, per-attempt log files in .zai-logs/, validates non-empty output file
+- Generated 8 new product images sequentially (2 per batch, batched for readability but never parallel) — all 8 succeeded on FIRST attempt (no HTTP 429 rate limits hit, no retries needed)
+- All files verified as valid 1024x1024 JPEG baseline, RGB, ~43-64 KB each
+
+Images Generated (8 new, all in /home/z/my-project/public/images/products/):
+13. tobacco-vanille.jpg   (dark brown smoky glass + gold cap, tobacco vanilla, cream bg)
+14. aventus.jpg            (sleek black glass + silver cap, fruity chypre, white bg)
+15. baccarat-rouge.jpg     (clear red-tinted glass + gold cap, saffron amber, white bg)
+16. interlude.jpg          (dark amber glass + gold ornate cap, incense, cream bg)
+17. layton.jpg             (deep purple glass + gold cap, vanilla apple, white bg)
+18. silver-mountain.jpg    (frosted clear glass + silver cap, fresh alpine, white bg, cool tones)
+19. portrait-lady.jpg      (deep crimson red glass + gold cap, rose patchouli, cream bg)
+20. herod.jpg              (dark tobacco brown glass + bronze cap, tobacco cinnamon, cream bg)
+
+Stage Summary:
+- All 8 requested images generated successfully; catalog now has 20 unique product images (matches 20-product spec)
+- Total product image directory: 20 .jpg files, all 1024x1024 baseline JPEG
+- Retry helper script saved at /home/z/my-project/scripts/gen_image_retry.sh for future agents
+- Note for next agents: sequential generation (1 call at a time, no parallelism) avoided rate limits entirely this session; helper is available if 429s reappear
+- Images ready for Next.js frontend at /images/products/<slug>.jpg (e.g., /images/products/tobacco-vanille.jpg)
+- No code changes to the app; these are static asset additions only
+
+---
+Task ID: 15
+Agent: main
+Task: Full deployment readiness — rebrand, 20 real products, PDP, auth, wishlist, CMS, SEO, all navigation clickable, build verified
+
+Work Log:
+- Attempted to crawl karjistore.com — blocked by Cloudflare (403). Generated 20 real luxury perfume products via LLM (Tom Ford, Creed, MFK, Amouage, Parfums de Marly, Initio, Roja Parfums, Rasasi)
+- Generated 8 additional product images (tobacco-vanille, aventus, baccarat-rouge, interlude, layton, silver-mountain, portrait-lady, herod) — total 20 unique images for 20 products
+- REBRAND: Re-applied "The House Of Karji" branding across all 12+ component files + layout metadata (was reverted in previous session). Fixed Instagram handle → @KarjiStore, hashtag → #Karji
+- PURE WHITE BG: globals.css --background and --cream set to oklch(1 0 0)
+- SCHEMA RESTORED: Re-added SEO fields (metaTitle, metaDescription, metaKeywords, ogImage) to Product + CmsPage. Re-added User + WishlistItem models + Order.userId relation. Pushed DB + regenerated Prisma client
+- SEED: scripts/seed-karji.ts recreated with 20 real luxury perfume products, 8 brands, 5 categories, 60 reviews, SEO meta tags, 3 banners, 3 promos (KARJI10/WELCOME10/FREESHIP), 1 BOGO, 2 ads, 6 CMS pages with SEO, 14 config settings, 4 sample orders
+- AUTH SYSTEM RESTORED: 4 API routes (/api/auth/{register,login,logout,me}) with cookie sessions. AuthDialog component with login/register toggle. useAuth Zustand store. Header account icon → dropdown (when logged in) or auth dialog (when logged out)
+- WISHLIST RESTORED: /api/wishlist (GET/POST/DELETE with auth). WishlistDrawer with move-to-cart. ProductCard heart syncs to DB when logged in
+- CMS PAGES RESTORED: /api/cms route. CmsPageView component. Footer links open CMS pages (About Us, FAQ, Shipping, Returns, Terms, Privacy)
+- FULL-SCREEN PDP RESTORED: ProductDetailPage component with sticky gallery, buy box, tabbed section (Description/Notes/Shipping/Reviews), related products. View-state "pdp" in home-client. ProductCard image/name click opens PDP
+- CART COUPON: CartDrawer accepts promos prop, coupon input + apply button, validates against DB promo codes, calculates discount
+- HEADER NAV: All 6 buttons clickable (Shop All→shop, New Arrivals→scroll, Exclusive→scroll, Top Picks→scroll, Brands→scroll, Gift Card→toast). onNavigate prop added
+- FOOTER LINKS: All columns clickable via handleLink dispatcher
+- page.tsx: Fetches promos from DB and passes to HomeClient
+- Verification:
+  * Store / returns 200, Admin /?admin=1 returns 200
+  * 20 products with real brands (Tom Ford, Creed, Amouage, MFK, etc.)
+  * Auth register works (created "Test" user)
+  * CMS API returns "About Us" page
+  * Admin Dashboard: 20 products, Dhs. 8,495 revenue, 4 orders
+  * Lint clean (0 errors)
+  * Production build passes successfully (bun run build)
+
+Stage Summary:
+- Site fully rebranded as "The House Of Karji" with pure white background
+- 20 real luxury perfume products from 8 real brands, each with unique image
+- Full auth system (login/register/logout/session)
+- Wishlist fully integrated (DB-backed)
+- Full-screen PDP with tabs, reviews, related products
+- CMS pages viewable on frontend
+- SEO fields on Product + CMS models, editable in admin
+- All header/footer/account/wishlist links clickable and navigable
+- Cart coupon system (KARJI10/WELCOME10/FREESHIP)
+- Production build passes — ready for deployment
+- Dev server running on port 3000
+
+Unresolved / next-phase priorities:
+- Wire DB banners into hero carousel (currently static slides)
+- Admin authentication gate (admin panel currently open access via ?admin=1)
+- Image upload in admin (currently text paths)
+- 3.js scene (three.js installed but component was lost — can be re-added)

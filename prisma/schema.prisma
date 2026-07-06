@@ -59,10 +59,16 @@ model Product {
   isArtisanal    Boolean  @default(false)
   isFeatured     Boolean  @default(false)
   isNew          Boolean  @default(false)
+  // SEO fields
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
   createdAt      DateTime @default(now())
   brand          Brand    @relation(fields: [brandId], references: [id])
   category       Category @relation(fields: [categoryId], references: [id])
   reviews        Review[]
+  wishlistItems  WishlistItem[]
 }
 
 model Review {
@@ -89,7 +95,9 @@ model Order {
   currency     String   @default("AED")
   status       String   @default("pending")
   address      String   // JSON
+  userId       String?
   createdAt    DateTime @default(now())
+  user         User?    @relation("UserOrders", fields: [userId], references: [id])
 }
 
 model NewsletterSubscriber {
@@ -163,6 +171,10 @@ model CmsPage {
   slug      String   @unique
   content   String
   isPublished Boolean @default(true)
+  metaTitle       String?
+  metaDescription String?
+  metaKeywords    String?
+  ogImage         String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -174,5 +186,29 @@ model ConfigSetting {
   label String
   group String @default("general") // general | shipping | payment | tax
   updatedAt DateTime @updatedAt
+}
+
+// ===== Auth & Wishlist =====
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("customer")
+  createdAt DateTime @default(now())
+  wishlist  WishlistItem[]
+  orders    Order[]  @relation("UserOrders")
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId])
 }
 

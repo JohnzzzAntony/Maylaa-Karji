@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingBag, Heart, User, Menu, X, ChevronDown, Sparkles } from "lucide-react";
-import { useCart, useWishlist, useUI } from "@/lib/cart-store";
+import { useCart, useWishlist, useUI, useAuth } from "@/lib/cart-store";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const NAV = [
   { label: "Shop All", hasMenu: true },
@@ -27,11 +28,13 @@ export function Header({
   onOpenMobileMenu,
   onShopAll,
   onHome,
+  onNavigate,
 }: {
   onOpenSearch: () => void;
   onOpenMobileMenu: () => void;
   onShopAll: () => void;
   onHome: () => void;
+  onNavigate: (section: string) => void;
 }) {
   const [scrolled, setScrolled] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
@@ -39,6 +42,12 @@ export function Header({
   const setOpen = useCart((s) => s.setOpen);
   const wishCount = useWishlist((s) => s.ids.length);
   const setQuizOpen = useUI((s) => s.setQuizOpen);
+  const setAuthOpen = useUI((s) => s.setAuthOpen);
+  const setWishlistOpen = useUI((s) => s.setWishlistOpen);
+  const { user, logout } = useAuth();
+  const [accountMenu, setAccountMenu] = useState(false);
+
+  useEffect(() => { useAuth.getState().fetchUser(); }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -70,7 +79,7 @@ export function Header({
             <span className="font-serif text-lg font-bold text-gold">SG</span>
           </div>
           <div className="hidden flex-col leading-none sm:flex">
-            <span className="font-serif text-xl font-semibold tracking-wide text-foreground">ScentGrade</span>
+            <span className="font-serif text-xl font-semibold tracking-wide text-foreground">The House Of Karji</span>
             <span className="text-[9px] font-medium uppercase tracking-[0.3em] text-muted-foreground">Curated Fragrance</span>
           </div>
         </button>
@@ -84,7 +93,14 @@ export function Header({
               onMouseEnter={() => setOpenMenu(item.hasMenu ? item.label : null)}
             >
               <button
-                onClick={() => item.label === "Shop All" && onShopAll()}
+                onClick={() => {
+                  if (item.label === "Shop All") onShopAll();
+                  else if (item.label === "New Arrivals") onNavigate("new");
+                  else if (item.label === "Exclusive") onNavigate("exclusive");
+                  else if (item.label === "Top Picks") onNavigate("bestsellers");
+                  else if (item.label === "Brands") onNavigate("brands");
+                  else if (item.label === "Gift Card") onNavigate("gift");
+                }}
                 className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-foreground/80 transition hover:text-gold"
               >
                 {item.label}
@@ -139,12 +155,22 @@ export function Header({
             <Search size={20} />
           </button>
           <button
-            className="hidden h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent sm:grid"
+            onClick={() => user ? setAccountMenu((v) => !v) : setAuthOpen(true)}
+            className="grid h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent"
             aria-label="Account"
           >
             <User size={20} />
           </button>
+          {accountMenu && user && (
+            <div className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-border bg-white p-2 shadow-luxury-lg" onMouseLeave={() => setAccountMenu(false)}>
+              <div className="border-b border-border px-3 py-2"><p className="text-sm font-semibold">{user.name}</p><p className="truncate text-xs text-muted-foreground">{user.email}</p></div>
+              <button onClick={() => { setWishlistOpen(true); setAccountMenu(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-foreground transition hover:bg-secondary"><Heart size={15} /> My Wishlist</button>
+              {user.role === "admin" && (<a href="/?admin=1" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-foreground transition hover:bg-secondary"><Sparkles size={15} /> Admin Panel</a>)}
+              <button onClick={() => { logout(); setAccountMenu(false); toast.success("Signed out"); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-600 transition hover:bg-red-50"><X size={15} /> Sign Out</button>
+            </div>
+          )}
           <button
+            onClick={() => setWishlistOpen(true)}
             className="relative hidden h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent sm:grid"
             aria-label="Wishlist"
           >

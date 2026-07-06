@@ -25,7 +25,7 @@ export function MobileMenu({ open, onOpenChange }: { open: boolean; onOpenChange
             <div className="grid h-9 w-9 place-items-center rounded-full border-2 border-gold">
               <span className="font-serif text-base font-bold text-gold">SG</span>
             </div>
-            <span className="font-serif text-lg font-semibold">ScentGrade</span>
+            <span className="font-serif text-lg font-semibold">The House Of Karji</span>
           </div>
         </div>
         <nav className="px-2 py-3">

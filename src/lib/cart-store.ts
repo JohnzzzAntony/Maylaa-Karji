@@ -102,13 +102,50 @@ export const useRecentlyViewed = create<RecentlyViewedState>()(
 type UIState = {
   quizOpen: boolean;
   chatOpen: boolean;
+  authOpen: boolean;
+  wishlistOpen: boolean;
   setQuizOpen: (v: boolean) => void;
   setChatOpen: (v: boolean) => void;
+  setAuthOpen: (v: boolean) => void;
+  setWishlistOpen: (v: boolean) => void;
 };
 
 export const useUI = create<UIState>((set) => ({
   quizOpen: false,
   chatOpen: false,
+  authOpen: false,
+  wishlistOpen: false,
   setQuizOpen: (v) => set({ quizOpen: v }),
   setChatOpen: (v) => set({ chatOpen: v }),
+  setAuthOpen: (v) => set({ authOpen: v }),
+  setWishlistOpen: (v) => set({ wishlistOpen: v }),
+}));
+
+// Auth store
+type AuthUser = { id: string; name: string; email: string; role: string };
+type AuthState = {
+  user: AuthUser | null;
+  loading: boolean;
+  setUser: (u: AuthUser | null) => void;
+  fetchUser: () => Promise<void>;
+  logout: () => Promise<void>;
+};
+
+export const useAuth = create<AuthState>((set) => ({
+  user: null,
+  loading: true,
+  setUser: (u) => set({ user: u, loading: false }),
+  fetchUser: async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      set({ user: data.user, loading: false });
+    } catch {
+      set({ user: null, loading: false });
+    }
+  },
+  logout: async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    set({ user: null });
+  },
 }));

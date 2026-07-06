@@ -18,10 +18,10 @@ export function InstagramGrid() {
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
       <div className="mb-10 text-center">
         <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.3em] text-gold">
-          <Instagram size={13} /> @ScentGrade
+          <Instagram size={13} /> @KarjiStore
         </span>
         <h2 className="mt-2 font-serif text-4xl font-semibold sm:text-5xl">From Our Community</h2>
-        <p className="mt-3 text-sm text-muted-foreground">Tag <span className="font-semibold text-foreground">#ScentGrade</span> for a chance to be featured.</p>
+        <p className="mt-3 text-sm text-muted-foreground">Tag <span className="font-semibold text-foreground">#Karji</span> for a chance to be featured.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-6">
@@ -51,7 +51,7 @@ export function InstagramGrid() {
           href="#"
           className="inline-flex items-center gap-2 rounded-lg border border-border px-6 py-3 text-xs font-semibold uppercase tracking-wider text-foreground transition hover:border-gold hover:text-gold"
         >
-          <Instagram size={15} /> Follow @ScentGrade
+          <Instagram size={15} /> Follow @KarjiStore
         </a>
       </div>
     </section>

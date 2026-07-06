@@ -11,7 +11,7 @@ const TESTIMONIALS = [
     role: "Verified Buyer · London",
     avatar: "https://i.pravatar.cc/100?img=47",
     rating: 5,
-    text: "ScentGrade has transformed my fragrance journey. The curation is impeccable — every bottle feels hand-selected just for me. Future Oud is now my signature.",
+    text: "The House Of Karji has transformed my fragrance journey. The curation is impeccable — every bottle feels hand-selected just for me. Future Oud is now my signature.",
     product: "Future Oud",
   },
   {
@@ -19,7 +19,7 @@ const TESTIMONIALS = [
     role: "Verified Buyer · Abu Dhabi",
     avatar: "https://i.pravatar.cc/100?img=12",
     rating: 5,
-    text: "As an oud collector, I'm particular. ScentGrade's selection rivals the finest boutiques in Paris. The authenticity and packaging are beyond compare.",
+    text: "As an oud collector, I'm particular. The House Of Karji's selection rivals the finest boutiques in Paris. The authenticity and packaging are beyond compare.",
     product: "Midnight Oud",
   },
   {
