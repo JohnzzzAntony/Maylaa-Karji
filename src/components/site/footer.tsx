@@ -102,7 +102,7 @@ export function Footer({ onNavigate, onOpenCms }: { onNavigate?: (s: string) => 
           <div className="col-span-2 md:col-span-1">
             <a href="/" className="flex items-center gap-2.5">
               <div className="grid h-10 w-10 place-items-center rounded-full border-2 border-gold">
-                <span className="font-serif text-lg font-bold text-gold">SG</span>
+                <span className="font-serif text-lg font-bold text-gold">K</span>
               </div>
               <div className="flex flex-col leading-none">
                 <span className="font-serif text-xl font-semibold">The House Of Karji</span>

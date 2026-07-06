@@ -285,3 +285,24 @@ Unresolved / next-phase priorities:
 - Admin authentication gate (admin panel currently open access via ?admin=1)
 - Image upload in admin (currently text paths)
 - 3.js scene (three.js installed but component was lost — can be re-added)
+
+---
+Task ID: 16
+Agent: main
+Task: Fix display issues — logo monogram, promo code references, verify preview
+
+Work Log:
+- Took screenshot of current state — site was rendering correctly but logo showed "SG" instead of "K", and promo code references still said "JULY4" instead of "KARJI10"
+- Fixed logo monogram: "SG" → "K" in header.tsx, mobile-menu.tsx, footer.tsx
+- Fixed promo code: "JULY4" → "KARJI10" in hero-carousel.tsx, announcement-bar.tsx, live-chat.tsx
+- Verified via agent-browser screenshots:
+  * Hero section: "The House Of Karji" branding, "12% Off" offer, "SHOP THE OFFER" CTA, promo code KARJI10
+  * Product grid: TOM FORD, CREED brands visible, "Baccarat Rouge 540" with image, clean white background, structured grid layout
+  * Mid sections: Quiz CTA, Best Sellers, Journal all rendering
+- Lint clean, Store returns 200, Admin returns 200
+
+Stage Summary:
+- Logo now shows "K" monogram (was "SG")
+- All promo codes updated to KARJI10 (was JULY4)
+- Site fully functional with white background, 20 real luxury products, clean layout
+- Ready for preview

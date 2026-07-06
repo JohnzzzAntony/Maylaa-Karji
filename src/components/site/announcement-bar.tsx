@@ -5,7 +5,7 @@ import { Sparkles, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const messages = [
-  { icon: Sparkles, text: "12% OFF Until July 4 — Use Code JULY4 at Checkout" },
+  { icon: Sparkles, text: "12% OFF Until July 4 — Use Code KARJI10 at Checkout" },
   { icon: Sparkles, text: "Complimentary Worldwide Shipping on Orders Over Dhs. 500" },
   { icon: Sparkles, text: "Authenticity Guaranteed · 30-Day Returns · Secure Payment" },
 ];

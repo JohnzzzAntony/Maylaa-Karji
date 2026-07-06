@@ -23,7 +23,7 @@ export function MobileMenu({ open, onOpenChange }: { open: boolean; onOpenChange
         <div className="flex items-center justify-between border-b border-border px-5 py-4">
           <div className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-full border-2 border-gold">
-              <span className="font-serif text-base font-bold text-gold">SG</span>
+              <span className="font-serif text-base font-bold text-gold">K</span>
             </div>
             <span className="font-serif text-lg font-semibold">The House Of Karji</span>
           </div>

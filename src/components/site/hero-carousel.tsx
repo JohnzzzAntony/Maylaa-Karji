@@ -13,7 +13,7 @@ const SLIDES = [
     eyebrow: "Holiday Weekend Offer",
     title: "12% Off",
     subtitle: "The Art of Arabian Oud",
-    desc: "Celebrate the season with curated luxury fragrances. Use code JULY4 at checkout.",
+    desc: "Celebrate the season with curated luxury fragrances. Use code KARJI10 at checkout.",
     cta: "Shop the Offer",
     accent: "from-gold/30 via-transparent to-espresso/60",
     image: "/images/hero/hero-main.jpg",

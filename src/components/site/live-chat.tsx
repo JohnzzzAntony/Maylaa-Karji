@@ -39,7 +39,7 @@ const KB: Array<{ keywords: string[]; answer: string }> = [
   },
   {
     keywords: ["price", "expensive", "cost", "afford"],
-    answer: "Our fragrances range from Dhs. 720 (White Musk) to Dhs. 1,320 (Amber Royale). We offer 30ml, 50ml, and 100ml sizes, and discovery sets are coming soon. All prices include our luxury packaging and a complimentary sample. Use code JULY4 for 12% off your first order!",
+    answer: "Our fragrances range from Dhs. 720 (White Musk) to Dhs. 1,320 (Amber Royale). We offer 30ml, 50ml, and 100ml sizes, and discovery sets are coming soon. All prices include our luxury packaging and a complimentary sample. Use code KARJI10 for 12% off your first order!",
   },
   {
     keywords: ["authentic", "real", "genuine", "fake"],
