@@ -59,7 +59,7 @@ const KB: Array<{ keywords: string[]; answer: string }> = [
   },
 ];
 
-const DEFAULT_ANSWER = "Great question! I'd recommend trying our Scent Concierge Quiz for a personalized match, or browse our Bestsellers section — Future Oud and Rose Noir are perennial favorites. For anything specific, our team is also reachable at concierge@scentgrade.com. Is there a particular note family you're drawn to?";
+const DEFAULT_ANSWER = "Great question! I'd recommend trying our Scent Concierge Quiz for a personalized match, or browse our Bestsellers section — Future Oud and Rose Noir are perennial favorites. For anything specific, our team is also reachable at concierge@karjistore.com. Is there a particular note family you're drawn to?";
 
 function findAnswer(query: string): string {
   const q = query.toLowerCase();

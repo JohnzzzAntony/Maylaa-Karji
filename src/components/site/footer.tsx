@@ -141,7 +141,7 @@ export function Footer({ onNavigate, onOpenCms }: { onNavigate?: (s: string) => 
         <div className="mt-10 grid gap-4 border-t border-white/10 pt-8 sm:grid-cols-2 lg:grid-cols-4">
           {[
             { icon: Clock, label: "Mon–Sat: 9AM – 9PM GST" },
-            { icon: Mail, label: "concierge@scentgrade.com" },
+            { icon: Mail, label: "concierge@karjistore.com" },
             { icon: Phone, label: "+971 4 123 4567" },
             { icon: MapPin, label: "DIFC Gate Village, Dubai, UAE" },
           ].map((c, i) => (
