@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 
 type Cat = { id: string; name: string; slug: string; description: string; image: string };
 
-export function CategoryShowcase({ categories }: { categories: Cat[] }) {
+export function CategoryShowcase({ categories, onNavigateCategory }: { categories: Cat[]; onNavigateCategory?: (slug: string) => void }) {
   return (
     <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
       <div className="mb-10 flex flex-col items-center text-center">
@@ -40,14 +40,14 @@ export function CategoryShowcase({ categories }: { categories: Cat[] }) {
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
         {categories.map((cat, i) => (
-          <motion.a
+          <motion.button
             key={cat.id}
-            href="#products"
+            onClick={() => onNavigateCategory?.(cat.slug)}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.08, duration: 0.5 }}
-            className={`group relative overflow-hidden rounded-2xl shadow-luxury ${i === 0 ? "col-span-2 lg:col-span-1" : ""}`}
+            className={`group relative overflow-hidden rounded-2xl shadow-luxury text-left ${i === 0 ? "col-span-2 lg:col-span-1" : ""}`}
           >
             <div className="relative aspect-[3/4] w-full">
               <Image
@@ -66,7 +66,7 @@ export function CategoryShowcase({ categories }: { categories: Cat[] }) {
                 </span>
               </div>
             </div>
-          </motion.a>
+          </motion.button>
         ))}
       </div>
     </section>

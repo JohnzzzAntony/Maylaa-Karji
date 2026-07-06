@@ -1,14 +1,16 @@
 "use client";
 
 import useEmblaCarousel from "embla-carousel-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import type { SerializedProduct } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
 
-const SLIDES = [
+export type Banner = { id: string; title: string; subtitle: string; image: string; link: string; position: string };
+
+const DEFAULT_SLIDES = [
   {
     eyebrow: "Holiday Weekend Offer",
     title: "12% Off",
@@ -38,10 +40,28 @@ const SLIDES = [
   },
 ];
 
-export function HeroCarousel({ featured }: { featured?: SerializedProduct[] }) {
+export function HeroCarousel({ featured, banners }: { featured?: SerializedProduct[]; banners?: Banner[] }) {
   const [emblaRef, embla] = useEmblaCarousel({ loop: true, duration: 30 });
   const [idx, setIdx] = useState(0);
   const [paused, setPaused] = useState(false);
+
+  // Build slides from DB banners (hero position) or fall back to defaults
+  const slides = useMemo(() => {
+    const heroBanners = (banners ?? []).filter((b) => b.position === "hero");
+    if (heroBanners.length > 0) {
+      return heroBanners.map((b, i) => ({
+        eyebrow: i === 0 ? "Featured Offer" : "Collection",
+        title: b.title,
+        subtitle: b.subtitle,
+        desc: b.subtitle,
+        cta: "Shop Now",
+        accent: i % 2 === 0 ? "from-gold/30 via-transparent to-espresso/60" : "from-emerald-deep/40 via-transparent to-espresso/60",
+        image: b.image,
+        link: b.link,
+      }));
+    }
+    return DEFAULT_SLIDES;
+  }, [banners]);
 
   const onSelect = useCallback(() => setIdx(embla?.selectedScrollSnap() ?? 0), [embla]);
   const scrollPrev = useCallback(() => embla?.scrollPrev(), [embla]);
@@ -67,7 +87,7 @@ export function HeroCarousel({ featured }: { featured?: SerializedProduct[] }) {
     >
       <div className="embla overflow-hidden" ref={emblaRef}>
         <div className="embla__container">
-          {SLIDES.map((slide, i) => (
+          {slides.map((slide, i) => (
             <div className="embla__slide relative" key={i}>
               <div className="relative h-[70vh] min-h-[520px] w-full overflow-hidden">
                 <Image
@@ -124,7 +144,7 @@ export function HeroCarousel({ featured }: { featured?: SerializedProduct[] }) {
                               className="mt-7 flex flex-wrap items-center gap-3"
                             >
                               <a
-                                href="#products"
+                                href={slide.link || "#products"}
                                 className="group inline-flex items-center gap-2 rounded-lg bg-gold px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-espresso transition hover:bg-gold-soft"
                               >
                                 {slide.cta}
@@ -167,17 +187,17 @@ export function HeroCarousel({ featured }: { featured?: SerializedProduct[] }) {
 
       {/* Dots + progress */}
       <div className="absolute bottom-6 left-1/2 z-10 flex -translate-x-1/2 items-center gap-3">
-        {SLIDES.map((_, i) => (
+        {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => embla?.scrollTo(i)}
-            aria-label={`Go to slide ${i + 1}`}
+            aria-label={"Go to slide " + (i + 1)}
             className="group relative h-1.5 overflow-hidden rounded-full bg-white/30 transition-all"
             style={{ width: i === idx ? 48 : 16 }}
           >
             {i === idx && !paused && (
               <motion.div
-                key={`bar-${idx}`}
+                key={"bar-" + idx}
                 className="absolute inset-0 bg-gold"
                 initial={{ x: "-100%" }}
                 animate={{ x: "0%" }}

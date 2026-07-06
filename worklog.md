@@ -306,3 +306,38 @@ Stage Summary:
 - All promo codes updated to KARJI10 (was JULY4)
 - Site fully functional with white background, 20 real luxury products, clean layout
 - Ready for preview
+
+---
+Task ID: 17
+Agent: main
+Task: Full backend-frontend integration — banners, ads, BOGO, categories with pages, all admin data reflects on frontend
+
+Work Log:
+- WIRED DB BANNERS → HERO CAROUSEL: Rewrote hero-carousel.tsx to accept `banners` prop. Builds slides dynamically from DB banners (position="hero"), falling back to default slides if none. Each banner's title/subtitle/image/link displayed in carousel. Verified: "Test Backend Banner" added via admin API appeared on frontend HTML
+- BUILT CATEGORY PAGES: New category-view.tsx component with hero banner (category image + name + description + product count), filter sidebar (categories/gender/price), sort dropdown, product grid, mobile filter drawer. CategoryShowcase categories now clickable (onNavigateCategory prop) → opens CategoryView. Category sidebar links allow switching between categories. Verified: clicking "Oud & Amber" opens full category page with products
+- WIRED DB ADVERTISEMENTS → FRONTEND: New ad-display.tsx component renders ads by placement (inline/sidebar). Added to homepage after category showcase (inline) and after fresh arrivals (sidebar). Verified: "Discovery Sets" ad appears on frontend
+- WIRED DB BOGO OFFERS → FRONTEND: New bogo-section.tsx component renders active BOGO offers with buy/get qty, discount %, CTA. Dark gradient section between artisanal and bestsellers. Verified: "Royal Bundle" offer + "Buy More, Save More" heading appear on frontend
+- UPDATED page.tsx: Now fetches banners, ads, bogoOffers from DB in Promise.all and passes to HomeClient
+- UPDATED home-client.tsx: Added "category" view state, openCategory handler, CategoryView rendering. All backend data (banners/ads/bogo/promos) wired to respective components. handleNavigate checks for category slugs → opens category page
+- UPDATED category-showcase.tsx: Categories now clickable buttons (was anchor links) with onNavigateCategory callback
+- INTEGRATION TEST: Added test banner via POST /api/admin/banners → verified "Test Backend Banner" + "Frontend Integration Test" appear in frontend HTML. Added test ad → verified on frontend. Cleaned up test data after verification
+- Fixed lint: Converted FilterContent component to renderFilters() function in category-view (react-hooks/static-components rule)
+- Verification:
+  * Frontend HTML contains: "12% Off Holiday" (banner), "Buy More, Save More" (BOGO section), "Royal Bundle" (BOGO offer), "Discovery Sets" (ad), "Oud & Amber" (category)
+  * Category page opens with hero, filters, product grid
+  * Lint clean (0 errors)
+  * Production build passes (bun run build succeeds)
+  * Store / returns 200
+
+Stage Summary:
+- ALL backend modules now reflect on frontend:
+  * Banner → hero carousel slides (dynamic from DB)
+  * BOGO Offer → promotional section with buy/get deals
+  * Advertisement → inline + sidebar ad displays
+  * Catalog → product grids throughout (already wired)
+  * Promotions → cart coupon system (already wired)
+  * CMS → viewable frontend pages (already wired)
+  * Categories → individual landing pages with filters/sort/products
+- Adding/editing/deleting any data in admin immediately reflects on frontend (server-rendered with force-dynamic)
+- Production build passes — ready for deployment
+- Dev server running on port 3000

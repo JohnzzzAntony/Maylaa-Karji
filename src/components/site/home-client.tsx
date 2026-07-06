@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { AnnouncementBar } from "./announcement-bar";
 import { Header } from "./header";
 import { HeroCarousel } from "./hero-carousel";
+import type { Banner } from "./hero-carousel";
 import { CategoryShowcase } from "./category-showcase";
 import { ProductSection } from "./product-section";
 import { ExtraitFeature } from "./extrait-feature";
@@ -35,6 +36,11 @@ import { ProductDetailPage } from "./product-detail-page";
 import { AuthDialog } from "./auth-dialog";
 import { WishlistDrawer } from "./wishlist-drawer";
 import { CmsPageView } from "./cms-page-view";
+import { CategoryView } from "./category-view";
+import { AdDisplay } from "./ad-display";
+import type { Ad } from "./ad-display";
+import { BogoSection } from "./bogo-section";
+import type { BogoOffer } from "./bogo-section";
 import { useRecentlyViewed, useAuth } from "@/lib/cart-store";
 
 type Brand = { id: string; name: string; slug: string; country: string; description: string; logoColor: string };
@@ -42,17 +48,18 @@ type Category = { id: string; name: string; slug: string; description: string; i
 type Promo = { id: string; code: string; type: string; value: number; minSpend: number };
 
 export function HomeClient({
-  trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories, promos,
+  trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories, promos, banners, ads, bogoOffers,
 }: {
-  trending: SerializedProduct[]; newArrivals: SerializedProduct[]; exclusive: SerializedProduct[]; bestSellers: SerializedProduct[]; artisanal: SerializedProduct[]; featured: SerializedProduct[]; brands: Brand[]; categories: Category[]; promos: Promo[];
+  trending: SerializedProduct[]; newArrivals: SerializedProduct[]; exclusive: SerializedProduct[]; bestSellers: SerializedProduct[]; artisanal: SerializedProduct[]; featured: SerializedProduct[]; brands: Brand[]; categories: Category[]; promos: Promo[]; banners: Banner[]; ads: Ad[]; bogoOffers: BogoOffer[];
 }) {
   const [quickView, setQuickView] = useState<SerializedProduct | null>(null);
   const [qvOpen, setQvOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [view, setView] = useState<"home" | "shop" | "pdp" | "cms">("home");
+  const [view, setView] = useState<"home" | "shop" | "pdp" | "cms" | "category">("home");
   const [pdpProduct, setPdpProduct] = useState<SerializedProduct | null>(null);
   const [cmsSlug, setCmsSlug] = useState<string | null>(null);
+  const [categorySlug, setCategorySlug] = useState<string | null>(null);
   const addRecentlyViewed = useRecentlyViewed((s) => s.add);
   const { fetchUser } = useAuth();
 
@@ -62,11 +69,15 @@ export function HomeClient({
   const openHome = () => { setView("home"); window.scrollTo({ top: 0, behavior: "smooth" }); };
   const openPdp = (p: SerializedProduct) => { setPdpProduct(p); setView("pdp"); window.scrollTo({ top: 0, behavior: "smooth" }); addRecentlyViewed(p.id); };
   const openCms = (slug: string) => { setCmsSlug(slug); setView("cms"); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  const openCategory = (slug: string) => { setCategorySlug(slug); setView("category"); window.scrollTo({ top: 0, behavior: "smooth" }); };
 
   const handleNavigate = (section: string) => {
     if (section === "gift") { toast.info("Gift cards coming soon! Use code KARJI10 for 10% off your order."); return; }
+    // Check if it's a category slug
+    const cat = categories.find((c) => c.slug === section);
+    if (cat) { openCategory(section); return; }
     setView("home");
-    setTimeout(() => { const el = document.getElementById(`section-${section}`); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); else document.getElementById("products")?.scrollIntoView({ behavior: "smooth" }); }, 80);
+    setTimeout(() => { const el = document.getElementById("section-" + section); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); else document.getElementById("products")?.scrollIntoView({ behavior: "smooth" }); }, 80);
   };
 
   const allProducts = useMemo(() => {
@@ -89,6 +100,12 @@ export function HomeClient({
     return allProducts.filter((p) => p.id !== pdpProduct.id && (p.category?.slug === pdpProduct.category?.slug || p.brand?.slug === pdpProduct.brand?.slug)).slice(0, 4);
   }, [pdpProduct, allProducts]);
 
+  const currentCategory = useMemo(() => categories.find((c) => c.slug === categorySlug) ?? null, [categories, categorySlug]);
+  const categoryProducts = useMemo(() => {
+    if (!categorySlug) return [];
+    return allProducts.filter((p) => p.category?.slug === categorySlug);
+  }, [allProducts, categorySlug]);
+
   const extraitProduct = featured[0] ?? bestSellers[0] ?? trending[0];
 
   return (
@@ -104,10 +121,14 @@ export function HomeClient({
           <ShopView products={allProducts} brands={brands} categories={categories} onQuickView={openQuickView} onBack={openHome} onViewProduct={openPdp} />
         ) : view === "cms" && cmsSlug ? (
           <CmsPageView slug={cmsSlug} onBack={openHome} />
+        ) : view === "category" && currentCategory ? (
+          <CategoryView category={currentCategory} products={categoryProducts} onBack={openHome} onQuickView={openQuickView} onViewProduct={openPdp} onNavigateCategory={openCategory} allCategories={categories} />
         ) : (
           <>
-            <HeroCarousel featured={featured} />
-            <CategoryShowcase categories={categories} />
+            <HeroCarousel featured={featured} banners={banners} />
+            <CategoryShowcase categories={categories} onNavigateCategory={openCategory} />
+            {/* Inline advertisements from DB */}
+            <AdDisplay ads={ads} placement="inline" />
             <div id="products" />
             <div id="section-new"><ProductSection eyebrow="New & Trending" title="The Fragrance Frontier" description="The scents everyone's talking about — fresh, modern, and impossible to ignore." products={trending} onQuickView={openQuickView} onViewAll={openShop} onViewProduct={openPdp} /></div>
             <SectionDivider label="Curated Exclusives" />
@@ -115,8 +136,12 @@ export function HomeClient({
             <div id="section-brands"><BrandMarquee brands={brands} /></div>
             {extraitProduct && <ExtraitFeature product={extraitProduct} />}
             <ProductSection eyebrow="Artisanal Perfumes" title="Hand-Crafted Masterpieces" description="Small-batch creations from independent perfumers, each a singular vision." products={artisanal} onQuickView={openQuickView} onViewAll={openShop} onViewProduct={openPdp} />
+            {/* BOGO offers from DB */}
+            <BogoSection offers={bogoOffers} products={allProducts} />
             <div id="section-bestsellers"><ProductSection eyebrow="Best Sellers" title="Loved By Thousands" description="The fragrances our patrons return for, again and again." products={bestSellers} onQuickView={openQuickView} icon="flame" bg="cream" onViewAll={openShop} onViewProduct={openPdp} /></div>
             <ProductSection eyebrow="Fresh Arrivals" title="Just Landed" description="The newest additions to our curated atelier." products={newArrivals} onQuickView={openQuickView} onViewAll={openShop} onViewProduct={openPdp} />
+            {/* Sidebar advertisements from DB */}
+            <AdDisplay ads={ads} placement="sidebar" />
             <FeaturedScentEditorial product={featured[1] ?? bestSellers[1] ?? trending[1]} />
             <RecentlyViewed allProducts={allProducts} onQuickView={openQuickView} />
             <QuizCTA />

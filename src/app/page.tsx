@@ -11,7 +11,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
     return <AdminPanel />;
   }
 
-  const [trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories, promos] = await Promise.all([
+  const [trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories, promos, banners, ads, bogoOffers] = await Promise.all([
     getAllProducts({ trending: true, limit: 8 }),
     getAllProducts({ isNew: true, limit: 8 }),
     getAllProducts({ exclusive: true, limit: 8 }),
@@ -21,6 +21,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
     getBrands(),
     getCategories(),
     db.promotion.findMany({ where: { isActive: true }, select: { id: true, code: true, type: true, value: true, minSpend: true } }),
+    db.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, select: { id: true, title: true, subtitle: true, image: true, link: true, position: true } }),
+    db.advertisement.findMany({ where: { isActive: true }, select: { id: true, title: true, image: true, link: true, placement: true } }),
+    db.bogoOffer.findMany({ where: { isActive: true }, select: { id: true, title: true, description: true, buyQty: true, getQty: true, discountPct: true } }),
   ]);
 
   return (
@@ -34,6 +37,9 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
       brands={brands}
       categories={categories}
       promos={promos}
+      banners={banners}
+      ads={ads}
+      bogoOffers={bogoOffers}
     />
   );
 }
