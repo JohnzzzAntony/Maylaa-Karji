@@ -1,0 +1,94 @@
+<div class="section" style="background: {{ section.settings.background_color }};">
+  <div class="page-width">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      {%- if section.blocks.size > 6 -%}
+        <div style="display:flex;gap:8px;">
+          <button type="button" class="slider-arrow" data-slider-prev style="position:static;" aria-label="{{ 'accessibility.previous' | t }}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="slider-arrow" data-slider-next style="position:static;" aria-label="{{ 'accessibility.next' | t }}">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="brand-slider" data-slider>
+      <div class="brand-track" data-slider-track>
+        {%- for block in section.blocks -%}
+          <a href="{{ block.settings.link | default: '#' }}" class="brand-card" {{ block.shopify_attributes }}>
+            {%- if block.settings.logo != blank -%}
+              <img
+                src="{{ block.settings.logo | image_url: width: 240 }}"
+                alt="{{ block.settings.name | escape }}"
+                width="180" height="90"
+                loading="lazy"
+              >
+            {%- else -%}
+              <span style="font-family:var(--font-heading-family);opacity:.5;">{{ block.settings.name | default: 'Brand' }}</span>
+            {%- endif -%}
+          </a>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Brand slider",
+  "tag": "section",
+  "max_blocks": 24,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Top Brands"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f7f7f7"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "brand",
+      "name": "Brand",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "logo",
+          "label": "Logo"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Brand name"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand slider",
+      "blocks": [
+        { "type": "brand" },
+        { "type": "brand" },
+        { "type": "brand" },
+        { "type": "brand" },
+        { "type": "brand" },
+        { "type": "brand" }
+      ]
+    }
+  ]
+}
+{% endschema %}

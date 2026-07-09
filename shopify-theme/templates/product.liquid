@@ -1,0 +1,74 @@
+<div class="section">
+  <div class="page-width">
+    <nav class="breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a> / {{ product.title }}
+    </nav>
+
+    <div class="product-main">
+      <div class="product-main__gallery">
+        {%- if product.featured_media -%}
+          <img id="ProductMainImage" src="{{ product.featured_media | image_url: width: 800 }}" alt="{{ product.featured_media.alt | escape | default: product.title }}" width="800" height="800" fetchpriority="high">
+        {%- else -%}
+          {{ 'product-1' | placeholder_svg_tag: '' }}
+        {%- endif -%}
+        {%- if product.media.size > 1 -%}
+          <div class="product-main__thumbs">
+            {%- for media in product.media limit: 6 -%}
+              <img src="{{ media | image_url: width: 150 }}" alt="{{ product.title | escape }}" width="72" height="72" loading="lazy" onclick="document.getElementById('ProductMainImage').src='{{ media | image_url: width: 800 }}'">
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+      </div>
+
+      <div class="product-main__details">
+        {%- if product.vendor != blank -%}<div class="product-card__vendor" style="text-align:left;">{{ product.vendor }}</div>{%- endif -%}
+        <h1 class="product-main__title">{{ product.title }}</h1>
+
+        <div class="product-main__price">
+          {%- if product.compare_at_price > product.price -%}
+            <span class="price--sale" style="color:var(--color-sale);">{{ product.price | money }}</span>
+            <span class="price--compare">{{ product.compare_at_price | money }}</span>
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        </div>
+
+        {%- form 'product', product -%}
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              <div class="form__field">
+                <label>{{ option.name }}</label>
+                <select name="options[{{ option.name | escape }}]">
+                  {%- for value in option.values -%}
+                    <option value="{{ value | escape }}"{% if option.selected_value == value %} selected{% endif %}>{{ value }}</option>
+                  {%- endfor -%}
+                </select>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <select name="id" class="visually-hidden" aria-hidden="true">
+            {%- for variant in product.variants -%}
+              <option value="{{ variant.id }}"{% unless variant.available %} disabled{% endunless %}{% if variant == product.selected_or_first_available_variant %} selected{% endif %}>{{ variant.title }}</option>
+            {%- endfor -%}
+          </select>
+
+          <div class="product-form__buttons">
+            <div class="product-form__qty">
+              <button type="button" onclick="this.nextElementSibling.stepDown()">-</button>
+              <input type="number" name="quantity" value="1" min="1">
+              <button type="button" onclick="this.previousElementSibling.stepUp()">+</button>
+            </div>
+            <button type="submit" name="add" class="btn"{% unless product.available %} disabled{% endunless %}>
+              {%- if product.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+            </button>
+          </div>
+        {%- endform -%}
+
+        {%- if product.description != blank -%}
+          <div class="product-main__desc rte">{{ product.description }}</div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>

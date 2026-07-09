@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{{ 'gift_cards.issued.title' | t: value: gift_card.initial_value | money, shop: shop.name }}</title>
+  {{ 'base.css' | asset_url | stylesheet_tag }}
+</head>
+<body>
+  <div class="password-page">
+    <div class="password-page__logo">{{ shop.name }}</div>
+    <h1 style="margin-bottom:8px;">Gift Card</h1>
+    <p style="font-size:34px;font-weight:700;color:var(--color-accent);margin:10px 0;">{{ gift_card.balance | money }}</p>
+    {%- if gift_card.qr_identifier -%}
+      <img src="{{ gift_card | img_tag }}" alt="Gift card QR" style="width:160px;margin:16px auto;">
+    {%- endif -%}
+    <p style="font-family:monospace;letter-spacing:2px;font-size:18px;margin:12px 0;">{{ gift_card.code | format_code }}</p>
+    <a href="{{ shop.url }}" class="btn" style="margin-top:16px;">Start shopping</a>
+  </div>
+</body>
+</html>

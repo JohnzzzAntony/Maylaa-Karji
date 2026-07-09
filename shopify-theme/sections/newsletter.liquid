@@ -1,0 +1,62 @@
+<div class="section newsletter" style="background: {{ section.settings.background_color }};">
+  <div class="page-width">
+    {%- if section.settings.title != blank -%}
+      <h2 class="newsletter__title">{{ section.settings.title }}</h2>
+    {%- endif -%}
+    {%- if section.settings.subtitle != blank -%}
+      <p style="margin:-8px 0 18px;color:var(--color-muted);">{{ section.settings.subtitle }}</p>
+    {%- endif -%}
+
+    {%- form 'customer', class: 'newsletter__form' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      <input
+        type="email"
+        name="contact[email]"
+        placeholder="{{ 'general.newsletter.email' | t }}"
+        aria-label="{{ 'general.newsletter.email' | t }}"
+        required
+      >
+      <button type="submit" name="commit">{{ section.settings.button_text | default: 'Submit' }}</button>
+      {%- if form.posted_successfully? -%}
+        <p class="newsletter__success">{{ 'general.newsletter.success' | t }}</p>
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Subscribe to newsletters"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Button text",
+      "default": "Submit"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}

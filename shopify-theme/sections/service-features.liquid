@@ -1,0 +1,85 @@
+<div class="service-features">
+  <div class="page-width">
+    <div class="service-features__grid">
+      {%- for block in section.blocks -%}
+        <div class="service-feature" {{ block.shopify_attributes }}>
+          {%- case block.settings.icon -%}
+            {%- when 'truck' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 3h13v13H1z"/><path d="M14 8h4l3 3v5h-7z"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="19" r="2"/></svg>
+            {%- when 'shield' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2 4 5v6c0 5 3.4 9 8 11 4.6-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>
+            {%- when 'support' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12a9 9 0 1 0-9 9"/><path d="M12 17a5 5 0 0 0 5-5V9a5 5 0 0 0-10 0v3"/><path d="M3 13v-2a2 2 0 0 1 2-2h1v6H5a2 2 0 0 1-2-2zM21 13v-2a2 2 0 0 0-2-2h-1v6h1a2 2 0 0 0 2-2z"/></svg>
+            {%- when 'refresh' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12a9 9 0 0 1 15-6.7L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15 6.7L3 16"/><path d="M3 21v-5h5"/></svg>
+            {%- else -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="m9 12 2 2 4-4"/></svg>
+          {%- endcase -%}
+          <div>
+            <div class="service-feature__title">{{ block.settings.title }}</div>
+            <div class="service-feature__text">{{ block.settings.text }}</div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Service features",
+  "tag": "section",
+  "max_blocks": 4,
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Feature",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "truck", "label": "Delivery truck" },
+            { "value": "shield", "label": "Shield" },
+            { "value": "support", "label": "Support headset" },
+            { "value": "refresh", "label": "Returns" }
+          ],
+          "default": "truck"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title",
+          "default": "Fast Delivery"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Fast and safe delivery all over UAE"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Service features",
+      "blocks": [
+        {
+          "type": "feature",
+          "settings": { "icon": "truck", "title": "Fast Delivery", "text": "Fast and safe delivery all over UAE" }
+        },
+        {
+          "type": "feature",
+          "settings": { "icon": "shield", "title": "Secure Payment", "text": "VISA, Mastercard and Cash on Delivery" }
+        },
+        {
+          "type": "feature",
+          "settings": { "icon": "support", "title": "Customer Support", "text": "We are here 24/7 for your queries" }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

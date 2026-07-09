@@ -1,0 +1,26 @@
+<div class="section">
+  <article class="page-width" style="max-width:800px;">
+    <div class="page-heading">
+      <div class="article-card__meta">{{ article.published_at | date: '%B %d, %Y' }}{% if article.author != blank %} · {{ article.author }}{% endif %}</div>
+      <h1>{{ article.title }}</h1>
+    </div>
+    {%- if article.image -%}
+      <img src="{{ article.image | image_url: width: 1200 }}" alt="{{ article.title | escape }}" width="1200" height="600" style="border-radius:10px;margin-bottom:28px;" fetchpriority="high">
+    {%- endif -%}
+    <div class="rte">{{ article.content }}</div>
+
+    {%- if blog.comments_enabled? -%}
+      <div style="margin-top:40px;">
+        {%- if article.comments_count > 0 -%}
+          <h3 style="margin-bottom:20px;">{{ article.comments_count }} comment(s)</h3>
+          {%- for comment in article.comments -%}
+            <div style="padding:14px 0;border-bottom:1px solid var(--color-border);">
+              <strong>{{ comment.author }}</strong>
+              <div class="rte" style="margin-top:6px;">{{ comment.content }}</div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </article>
+</div>

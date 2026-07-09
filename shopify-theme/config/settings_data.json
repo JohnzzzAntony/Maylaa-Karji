@@ -1,0 +1,38 @@
+{
+  "current": {
+    "color_accent": "#b8895a",
+    "color_accent_dark": "#96693e",
+    "color_text": "#1f1f1f",
+    "color_background": "#ffffff",
+    "color_dark_section": "#26313d",
+    "color_hero_bg": "#f6dcd8",
+    "type_body_font": "assistant_n4",
+    "type_heading_font": "assistant_n6",
+    "page_width": 1280,
+    "section_spacing": 56,
+    "show_wishlist": true,
+    "show_quick_view": true,
+    "show_sale_badge": true,
+    "show_second_image": true,
+    "logo_width": 120,
+    "sticky_header": true,
+    "enable_whatsapp": true,
+    "whatsapp_number": "971500000000"
+  },
+  "presets": {
+    "Karji Premium": {
+      "color_accent": "#b8895a",
+      "color_accent_dark": "#96693e",
+      "color_text": "#1f1f1f",
+      "color_background": "#ffffff",
+      "color_dark_section": "#26313d",
+      "color_hero_bg": "#f6dcd8",
+      "type_body_font": "assistant_n4",
+      "type_heading_font": "assistant_n6",
+      "page_width": 1280,
+      "section_spacing": 56,
+      "sticky_header": true,
+      "enable_whatsapp": true
+    }
+  }
+}

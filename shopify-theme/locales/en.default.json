@@ -1,0 +1,42 @@
+{
+  "general": {
+    "page": "Page {{ page }}",
+    "search": {
+      "placeholder": "Search for products, brands...",
+      "submit": "Search"
+    },
+    "newsletter": {
+      "email": "Email",
+      "submit": "Submit",
+      "success": "Thanks for subscribing"
+    },
+    "view_all": "View All",
+    "read_more": "Read More",
+    "read_less": "Read Less"
+  },
+  "accessibility": {
+    "skip_to_text": "Skip to content",
+    "previous": "Previous",
+    "next": "Next",
+    "cart": "Cart",
+    "account": "Account",
+    "wishlist": "Wishlist",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "products": {
+    "product": {
+      "sale": "Sale",
+      "sold_out": "Sold out",
+      "from_price": "From {{ price }}",
+      "add_to_cart": "Add to cart",
+      "quick_view": "Quick view",
+      "shop_now": "Shop Now",
+      "add_to_wishlist": "Add to wishlist"
+    }
+  },
+  "onboarding": {
+    "product_title": "Example product title",
+    "collection_title": "Collection name"
+  }
+}

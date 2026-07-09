@@ -1,0 +1,144 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero-banner",
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {
+            "subtitle": "Signature Scents",
+            "title": "The House of Karji",
+            "text": "Discover luxury fragrances, watches & accessories.",
+            "button_text": "Shop Now",
+            "text_position": "left",
+            "text_color": "#1f1f1f"
+          }
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {
+            "subtitle": "New Arrivals",
+            "title": "Niche Perfumes",
+            "text": "Curated collections from world-renowned brands.",
+            "button_text": "Explore",
+            "text_position": "left",
+            "text_color": "#1f1f1f"
+          }
+        }
+      },
+      "block_order": ["slide-1", "slide-2"],
+      "settings": {
+        "background_color": "#f6dcd8",
+        "autoplay_speed": 5
+      }
+    },
+    "categories": {
+      "type": "categories",
+      "blocks": {
+        "c1": { "type": "category", "settings": { "title": "Fragrances" } },
+        "c2": { "type": "category", "settings": { "title": "Watches" } },
+        "c3": { "type": "category", "settings": { "title": "Accessories" } },
+        "c4": { "type": "category", "settings": { "title": "Gift Sets" } }
+      },
+      "block_order": ["c1", "c2", "c3", "c4"],
+      "settings": {
+        "title": "Shop by Categories",
+        "center_title": true
+      }
+    },
+    "featured": {
+      "type": "featured-products",
+      "settings": {
+        "title": "Our Products",
+        "products_to_show": 10,
+        "show_view_all": true
+      }
+    },
+    "promo": {
+      "type": "promotional-banner",
+      "blocks": {
+        "m1": { "type": "mini" },
+        "m2": { "type": "mini" },
+        "m3": { "type": "mini" }
+      },
+      "block_order": ["m1", "m2", "m3"],
+      "settings": {
+        "banner_title": "PARFUMS",
+        "banner_subtitle": "bdk",
+        "text_position": "right",
+        "text_color": "#ffffff"
+      }
+    },
+    "bestsellers": {
+      "type": "bestsellers",
+      "settings": {
+        "title": "Bestsellers",
+        "products_to_show": 10,
+        "show_view_all": true
+      }
+    },
+    "services": {
+      "type": "service-features",
+      "blocks": {
+        "s1": { "type": "feature", "settings": { "icon": "truck", "title": "Fast Delivery", "text": "Fast and safe delivery all over UAE" } },
+        "s2": { "type": "feature", "settings": { "icon": "shield", "title": "Secure Payment", "text": "VISA, Mastercard and Cash on Delivery" } },
+        "s3": { "type": "feature", "settings": { "icon": "support", "title": "Customer Support", "text": "We are here 24/7 for your queries" } }
+      },
+      "block_order": ["s1", "s2", "s3"]
+    },
+    "dual": {
+      "type": "perfume-needs",
+      "blocks": {
+        "b1": { "type": "banner", "settings": { "title": "" } },
+        "b2": { "type": "banner", "settings": { "title": "" } }
+      },
+      "block_order": ["b1", "b2"],
+      "settings": {
+        "title": "All Your Perfume Needs",
+        "show_view_all": true
+      }
+    },
+    "brands": {
+      "type": "brand-slider",
+      "blocks": {
+        "br1": { "type": "brand", "settings": { "name": "Lencia" } },
+        "br2": { "type": "brand", "settings": { "name": "Khaltat Oud" } },
+        "br3": { "type": "brand", "settings": { "name": "Carolina Herrera" } },
+        "br4": { "type": "brand", "settings": { "name": "Brand" } },
+        "br5": { "type": "brand", "settings": { "name": "Brand" } },
+        "br6": { "type": "brand", "settings": { "name": "Brand" } }
+      },
+      "block_order": ["br1", "br2", "br3", "br4", "br5", "br6"],
+      "settings": {
+        "title": "Top Brands",
+        "background_color": "#f7f7f7"
+      }
+    },
+    "about": {
+      "type": "about-section",
+      "settings": {
+        "title": "Welcome to The House of Karji",
+        "enable_read_more": true
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "title": "Subscribe to newsletters",
+        "button_text": "Submit"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "categories",
+    "featured",
+    "promo",
+    "bestsellers",
+    "services",
+    "dual",
+    "brands",
+    "about",
+    "newsletter"
+  ]
+}

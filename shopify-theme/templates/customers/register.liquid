@@ -1,0 +1,30 @@
+<div class="section">
+  <div class="page-width">
+    <div class="page-heading"><h1>Create Account</h1></div>
+    <div class="form">
+      {%- form 'create_customer' -%}
+        {%- if form.errors -%}<p class="form__note form__note--error">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <div class="form__field">
+          <label for="first_name">First name</label>
+          <input type="text" name="customer[first_name]" id="first_name">
+        </div>
+        <div class="form__field">
+          <label for="last_name">Last name</label>
+          <input type="text" name="customer[last_name]" id="last_name">
+        </div>
+        <div class="form__field">
+          <label for="reg_email">Email</label>
+          <input type="email" name="customer[email]" id="reg_email" required>
+        </div>
+        <div class="form__field">
+          <label for="reg_password">Password</label>
+          <input type="password" name="customer[password]" id="reg_password" required>
+        </div>
+        <div class="form__actions">
+          <button type="submit" class="btn" style="width:100%;">Create account</button>
+        </div>
+        <div class="form__links"><a href="{{ routes.account_login_url }}">Already have an account? Sign in</a></div>
+      {%- endform -%}
+    </div>
+  </div>
+</div>
