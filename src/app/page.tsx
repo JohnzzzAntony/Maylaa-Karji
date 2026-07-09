@@ -18,7 +18,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
     if (token) {
       const { data: { user } } = await supabase.auth.getUser(token);
       if (user) {
-        const dbUser = await db.user.findUnique({ where: { id: user.id } });
+        const dbUser = await db.user.findUnique({ where: { email: user.email } });
         if (dbUser && (dbUser.role === "admin" || dbUser.role === "superadmin")) {
           isAdmin = true;
         }
