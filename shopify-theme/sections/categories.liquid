@@ -1,0 +1,105 @@
+<div class="section">
+  <div class="page-width">
+    {%- if section.settings.title != blank -%}
+      <div class="section-header{% if section.settings.center_title %} section-header--center{% endif %}">
+        <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      </div>
+    {%- endif -%}
+
+    <div class="category-grid">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign coll = block.settings.collection
+          assign card_image = block.settings.image
+          if card_image == blank and coll != blank
+            assign card_image = coll.featured_image
+          endif
+          assign card_title = block.settings.title
+          if card_title == blank and coll != blank
+            assign card_title = coll.title
+          endif
+          assign card_url = block.settings.link
+          if card_url == blank and coll != blank
+            assign card_url = coll.url
+          endif
+        -%}
+        <a href="{{ card_url | default: '#' }}" class="category-card" {{ block.shopify_attributes }}>
+          {%- if card_image != blank -%}
+            <img
+              src="{{ card_image | image_url: width: 500 }}"
+              srcset="{{ card_image | image_url: width: 300 }} 300w, {{ card_image | image_url: width: 500 }} 500w"
+              sizes="(max-width: 640px) 45vw, 22vw"
+              alt="{{ card_title | escape }}"
+              width="400" height="400"
+              loading="lazy"
+            >
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag: '' }}
+          {%- endif -%}
+          <span class="category-card__label">{{ card_title | default: 'Category' }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Categories",
+  "tag": "section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Shop by Categories"
+    },
+    {
+      "type": "checkbox",
+      "id": "center_title",
+      "label": "Center heading",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        {
+          "type": "collection",
+          "id": "collection",
+          "label": "Collection"
+        },
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image (overrides collection image)"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Title (overrides collection title)"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Custom link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Categories",
+      "blocks": [
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" },
+        { "type": "category" }
+      ]
+    }
+  ]
+}
+{% endschema %}

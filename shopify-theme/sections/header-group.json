@@ -1,0 +1,17 @@
+{
+  "type": "header",
+  "name": "Header",
+  "sections": {
+    "header": {
+      "type": "header",
+      "settings": {
+        "show_announcement": true,
+        "announcement_text": "Free Shipping on orders over 100 AED",
+        "utility_link_1_text": "En",
+        "utility_link_2_text": "AED",
+        "menu": "main-menu"
+      }
+    }
+  },
+  "order": ["header"]
+}

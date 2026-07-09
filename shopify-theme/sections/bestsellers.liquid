@@ -1,0 +1,84 @@
+<div class="section">
+  <div class="page-width">
+    <div class="section-header">
+      <h2 class="section-header__title">{{ section.settings.title }}</h2>
+      {%- if section.settings.show_view_all -%}
+        {%- assign view_all_url = section.settings.view_all_url -%}
+        {%- if view_all_url == blank and section.settings.collection != blank -%}
+          {%- assign view_all_url = section.settings.collection.url -%}
+        {%- endif -%}
+        <a href="{{ view_all_url | default: '#' }}" class="link-view-all">{{ 'general.view_all' | t }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="product-slider" data-slider>
+      <button type="button" class="slider-arrow slider-arrow--prev" data-slider-prev aria-label="{{ 'accessibility.previous' | t }}">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+
+      <div class="product-track" data-slider-track>
+        {%- assign products = section.settings.collection.products -%}
+        {%- if products.size > 0 -%}
+          {%- for product in products limit: section.settings.products_to_show -%}
+            {% render 'product-card', product: product %}
+          {%- endfor -%}
+        {%- else -%}
+          {%- for i in (1..5) -%}
+            {% render 'product-card' %}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+
+      <button type="button" class="slider-arrow slider-arrow--next" data-slider-next aria-label="{{ 'accessibility.next' | t }}">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% render 'quick-view-modal' %}
+
+{% schema %}
+{
+  "name": "Bestsellers",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Bestsellers"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 16,
+      "step": 1,
+      "label": "Products to show",
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show 'View All' link",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "view_all_url",
+      "label": "'View All' link URL (defaults to collection)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bestsellers"
+    }
+  ]
+}
+{% endschema %}

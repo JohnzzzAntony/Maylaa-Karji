@@ -1,0 +1,49 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "categories": {
+          "type": "menu",
+          "settings": { "title": "Categories", "menu": "footer" }
+        },
+        "informations": {
+          "type": "menu",
+          "settings": { "title": "Informations", "menu": "footer" }
+        },
+        "contact": {
+          "type": "contact",
+          "settings": {
+            "title": "Contact Us",
+            "address": "Building, Jumeirah, Dubai, UAE",
+            "email": "info@karji.com",
+            "phone": "+971 501489281"
+          }
+        },
+        "social": {
+          "type": "social",
+          "settings": {
+            "title": "Social Media",
+            "facebook": "#",
+            "instagram": "#",
+            "youtube": "#",
+            "tiktok": "#",
+            "whatsapp": "#"
+          }
+        },
+        "apps": {
+          "type": "apps",
+          "settings": { "title": "Download our Apps" }
+        }
+      },
+      "block_order": ["categories", "informations", "contact", "social", "apps"],
+      "settings": {
+        "copyright": "© 2026 Karji. All rights reserved.",
+        "credit": "Website Designed by"
+      }
+    }
+  },
+  "order": ["footer"]
+}

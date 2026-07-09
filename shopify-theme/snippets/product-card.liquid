@@ -1,0 +1,113 @@
+{%- comment -%}
+  Reusable product card.
+  Accepts: product (object), show_shop_link (bool, default true)
+{%- endcomment -%}
+
+{%- liquid
+  assign show_wishlist = settings.show_wishlist
+  assign show_quick_view = settings.show_quick_view
+  assign show_sale_badge = settings.show_sale_badge
+  assign show_second_image = settings.show_second_image
+  if show_shop_link == blank
+    assign show_shop_link = true
+  endif
+-%}
+
+{%- if product and product != empty -%}
+  <div class="product-card" data-product-id="{{ product.id }}">
+    {%- if product.available == false -%}
+      <span class="product-badge product-badge--soldout">{{ 'products.product.sold_out' | t }}</span>
+    {%- elsif show_sale_badge and product.compare_at_price > product.price -%}
+      {%- assign saved = product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round -%}
+      <span class="product-badge">-{{ saved }}%</span>
+    {%- endif -%}
+
+    {%- if show_wishlist -%}
+      <button
+        type="button"
+        class="product-card__wishlist"
+        data-wishlist="{{ product.id }}"
+        aria-label="{{ 'products.product.add_to_wishlist' | t }}"
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 1 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+        </svg>
+      </button>
+    {%- endif -%}
+
+    <a href="{{ product.url }}" class="product-card__media">
+      {%- if product.featured_media -%}
+        <img
+          class="product-card__img product-card__img--first"
+          src="{{ product.featured_media | image_url: width: 400 }}"
+          srcset="{{ product.featured_media | image_url: width: 300 }} 300w, {{ product.featured_media | image_url: width: 500 }} 500w"
+          sizes="(max-width: 640px) 45vw, 20vw"
+          alt="{{ product.featured_media.alt | escape | default: product.title }}"
+          width="400" height="533"
+          loading="lazy"
+        >
+        {%- if show_second_image and product.media[1] -%}
+          <img
+            class="product-card__img product-card__img--second"
+            src="{{ product.media[1] | image_url: width: 400 }}"
+            alt="{{ product.title | escape }}"
+            width="400" height="533"
+            loading="lazy"
+          >
+        {%- endif -%}
+      {%- else -%}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__img product-card__img--first' }}
+      {%- endif -%}
+
+      {%- if show_quick_view -%}
+        <button
+          type="button"
+          class="product-card__quickview"
+          data-quickview
+          data-qv-image="{{ product.featured_media | image_url: width: 600 }}"
+          data-qv-title="{{ product.title | escape }}"
+          data-qv-price="{{ product.price | money }}"
+          data-qv-desc="{{ product.description | strip_html | truncatewords: 40 | escape }}"
+          data-qv-url="{{ product.url }}"
+        >
+          {{ 'products.product.quick_view' | t }}
+        </button>
+      {%- endif -%}
+    </a>
+
+    <div class="product-card__info">
+      {%- if product.vendor != blank -%}
+        <div class="product-card__vendor">{{ product.vendor }}</div>
+      {%- endif -%}
+      <a href="{{ product.url }}"><h3 class="product-card__title">{{ product.title }}</h3></a>
+      <div class="product-card__price">
+        {%- if product.compare_at_price > product.price -%}
+          <span class="price--sale">{{ product.price | money }}</span>
+          <span class="price--compare">{{ product.compare_at_price | money }}</span>
+        {%- else -%}
+          {%- if product.price_varies -%}
+            {{ 'products.product.from_price' | t: price: product.price | money }}
+          {%- else -%}
+            {{ product.price | money }}
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+      {%- if show_shop_link -%}
+        <a href="{{ product.url }}" class="product-card__shop-link">{{ 'products.product.shop_now' | t }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+{%- else -%}
+  {%- comment -%} Onboarding placeholder {%- endcomment -%}
+  <div class="product-card">
+    <a href="#" class="product-card__media">
+      {{ 'product-1' | placeholder_svg_tag: 'product-card__img product-card__img--first' }}
+    </a>
+    <div class="product-card__info">
+      <div class="product-card__vendor">Brand</div>
+      <h3 class="product-card__title">{{ 'onboarding.product_title' | t }}</h3>
+      <div class="product-card__price">{{ 1999 | money }}</div>
+      <a href="#" class="product-card__shop-link">{{ 'products.product.shop_now' | t }}</a>
+    </div>
+  </div>
+{%- endif -%}

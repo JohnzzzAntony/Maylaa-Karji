@@ -1,0 +1,54 @@
+<div class="section about-section">
+  <div class="page-width">
+    <div class="about-section__inner">
+      {%- if section.settings.title != blank -%}
+        <h2 class="about-section__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      <div class="about-section__text{% if section.settings.enable_read_more %} is-collapsed{% endif %}" id="AboutText-{{ section.id }}">
+        {{ section.settings.text }}
+      </div>
+      {%- if section.settings.enable_read_more -%}
+        <button
+          type="button"
+          class="about-section__toggle"
+          data-readmore-toggle
+          data-readmore-target="#AboutText-{{ section.id }}"
+          data-more="{{ 'general.read_more' | t }}"
+          data-less="{{ 'general.read_less' | t }}"
+        >{{ 'general.read_more' | t }}</button>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "About section",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Welcome to The House of Karji"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Your search for the best perfume shops in UAE, luxurious watches, or a perfect accessory store in UAE ends here. Explore our wide range of high-quality products that will meet your demands in an instant. For both men and women, our perfumes shop UAE has a wide collection of scents that come across the renowned brands in the market. From our traditional to modern stylish perfumes, we have everything that will not leave your personality and mood untouched by great quality.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_read_more",
+      "label": "Enable Read More toggle",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "About section"
+    }
+  ]
+}
+{% endschema %}
