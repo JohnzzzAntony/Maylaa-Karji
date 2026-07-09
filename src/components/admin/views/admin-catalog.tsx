@@ -518,7 +518,7 @@ function ManageProducts() {
                   ))}
                 </div>
               </>
-            ) : (
+            ) : modalTab === "seo" ? (
               <div className="space-y-4">
                 <div className="rounded-lg bg-amber-50 border border-amber-100 p-4 mb-2 text-xs text-amber-800 space-y-1">
                   <p className="font-semibold">Search Engine Optimization (SEO)</p>
