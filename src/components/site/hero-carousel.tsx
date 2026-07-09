@@ -8,7 +8,7 @@ import { ArrowRight, ChevronLeft, ChevronRight, Sparkles } from "lucide-react";
 import type { SerializedProduct } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
 
-export type Banner = { id: string; title: string; subtitle: string; image: string; link: string; position: string };
+export type Banner = { id: string; title: string; subtitle: string; image: string; mobileImage?: string; link: string; position: string };
 
 const DEFAULT_SLIDES = [
   {
@@ -57,10 +57,11 @@ export function HeroCarousel({ featured, banners }: { featured?: SerializedProdu
         cta: "Shop Now",
         accent: i % 2 === 0 ? "from-gold/30 via-transparent to-espresso/60" : "from-emerald-deep/40 via-transparent to-espresso/60",
         image: b.image,
+        mobileImage: b.mobileImage,
         link: b.link,
       }));
     }
-    return DEFAULT_SLIDES;
+    return DEFAULT_SLIDES.map(s => ({ ...s, mobileImage: "" }));
   }, [banners]);
 
   const onSelect = useCallback(() => setIdx(embla?.selectedScrollSnap() ?? 0), [embla]);
@@ -89,80 +90,37 @@ export function HeroCarousel({ featured, banners }: { featured?: SerializedProdu
         <div className="embla__container">
           {slides.map((slide, i) => (
             <div className="embla__slide relative" key={i}>
-              <div className="relative h-[70vh] min-h-[520px] w-full overflow-hidden">
-                <Image
-                  src={slide.image}
-                  alt={slide.subtitle}
-                  fill
-                  priority={i === 0}
-                  sizes="100vw"
-                  className="object-cover"
-                />
+              <div className="relative h-[400px] md:h-[650px] w-full max-w-[767px] md:max-w-[1440px] overflow-hidden mx-auto">
+                {slide.mobileImage ? (
+                  <>
+                    <Image
+                      src={slide.image}
+                      alt={slide.subtitle}
+                      fill
+                      priority={i === 0}
+                      sizes="100vw"
+                      className="hidden md:block object-cover"
+                    />
+                    <Image
+                      src={slide.mobileImage}
+                      alt={slide.subtitle}
+                      fill
+                      priority={i === 0}
+                      sizes="100vw"
+                      className="block md:hidden object-cover"
+                    />
+                  </>
+                ) : (
+                  <Image
+                    src={slide.image}
+                    alt={slide.subtitle}
+                    fill
+                    priority={i === 0}
+                    sizes="100vw"
+                    className="object-cover"
+                  />
+                )}
                 <div className={`absolute inset-0 bg-gradient-to-r ${slide.accent}`} />
-                <div className="absolute inset-0 bg-gradient-to-t from-espresso/80 via-espresso/20 to-transparent md:bg-gradient-to-r md:from-espresso/90 md:via-espresso/40 md:to-transparent" />
-
-                <div className="absolute inset-0 flex items-center">
-                  <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
-                    <div className="max-w-xl text-white">
-                      <AnimatePresence mode="wait">
-                        {idx === i && (
-                          <motion.div
-                            key={i}
-                            initial="hidden"
-                            animate="visible"
-                            variants={{
-                              hidden: {},
-                              visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
-                            }}
-                          >
-                            <motion.span
-                              variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-gold/40 bg-gold/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-gold backdrop-blur-sm"
-                            >
-                              <Sparkles size={12} /> {slide.eyebrow}
-                            </motion.span>
-                            <motion.h1
-                              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                              className="mt-4 font-serif text-5xl font-semibold leading-[0.95] sm:text-6xl lg:text-7xl"
-                            >
-                              {slide.title}
-                            </motion.h1>
-                            <motion.p
-                              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                              className="mt-2 font-serif text-2xl text-gold sm:text-3xl"
-                            >
-                              {slide.subtitle}
-                            </motion.p>
-                            <motion.p
-                              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                              className="mt-4 max-w-md text-sm text-white/80 sm:text-base"
-                            >
-                              {slide.desc}
-                            </motion.p>
-                            <motion.div
-                              variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 } }}
-                              className="mt-7 flex flex-wrap items-center gap-3"
-                            >
-                              <a
-                                href={slide.link || "#products"}
-                                className="group inline-flex items-center gap-2 rounded-lg bg-gold px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-espresso transition hover:bg-gold-soft"
-                              >
-                                {slide.cta}
-                                <ArrowRight size={15} className="transition group-hover:translate-x-1" />
-                              </a>
-                              <a
-                                href="#journal"
-                                className="inline-flex items-center gap-2 rounded-lg border border-white/30 px-6 py-3.5 text-xs font-semibold uppercase tracking-wider text-white backdrop-blur-sm transition hover:bg-white/10"
-                              >
-                                Read The Journal
-                              </a>
-                            </motion.div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           ))}
@@ -208,26 +166,6 @@ export function HeroCarousel({ featured, banners }: { featured?: SerializedProdu
           </button>
         ))}
       </div>
-
-      {/* Featured product strip (desktop) */}
-      {featured && featured.length > 0 && (
-        <div className="absolute -bottom-1 left-1/2 z-10 hidden w-full max-w-7xl -translate-x-1/2 px-6 lg:block lg:px-8">
-          <div className="glass translate-y-1/2 rounded-2xl border border-border p-4 shadow-luxury-lg">
-            <div className="flex items-center justify-between gap-4">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-gold">Featured This Week</p>
-                <p className="font-serif text-lg">{featured[0].name}</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-gold">{formatPrice(featured[0].price)}</span>
-                <a href="#products" className="grid h-9 w-9 place-items-center rounded-full bg-espresso text-white transition hover:bg-gold">
-                  <ArrowRight size={15} />
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }

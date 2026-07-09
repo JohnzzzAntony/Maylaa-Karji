@@ -39,6 +39,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { LazyLoadInit } from "@/components/LazyLoadInit";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -49,6 +51,7 @@ export default function RootLayout({
       <body
         className={`${montserrat.variable} ${cormorant.variable} font-sans antialiased bg-background text-foreground`}
       >
+        <LazyLoadInit />
         {children}
         <Toaster />
         <SonnerToaster />

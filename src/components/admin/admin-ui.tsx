@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import type { ReactNode } from "react";
+import { ReactNode, useRef, useState } from "react";
+import { Upload, X } from "lucide-react";
+import { toast } from "sonner";
 
 export function AdminPage({ title, subtitle, action, children }: { title: string; subtitle?: string; action?: ReactNode; children: ReactNode }) {
   return (
@@ -177,4 +179,138 @@ export function useFetch<T>(url: string): { data: T | null; loading: boolean; er
   };
 
   return { data, loading, error, refetch: doFetch };
+}
+
+export function AdminImageInput({
+  label,
+  value,
+  onChange,
+  helperText,
+  recommendedSize,
+  accept = ".jpg,.jpeg,.png,.gif",
+}: {
+  label?: string;
+  value: string;
+  onChange: (v: string) => void;
+  helperText?: string;
+  recommendedSize?: string;
+  accept?: string;
+}) {
+  const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = async (file: File) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        onChange(data.url);
+        toast.success("Image uploaded successfully");
+      } else {
+        toast.error("Failed to upload image");
+      }
+    } catch (e) {
+      toast.error("Upload error");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const onDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(true);
+  };
+
+  const onDragLeave = () => {
+    setDragging(false);
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragging(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      handleFile(files[0]);
+    }
+  };
+
+  const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFile(files[0]);
+    }
+  };
+
+  return (
+    <div className="block">
+      {label && <span className="mb-1 block text-xs font-medium text-stone-600">{label}</span>}
+      <div
+        onDragOver={onDragOver}
+        onDragLeave={onDragLeave}
+        onDrop={onDrop}
+        onClick={() => fileInputRef.current?.click()}
+        className={cn(
+          "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition hover:bg-stone-50",
+          dragging ? "border-amber-500 bg-amber-50/30" : "border-stone-300 bg-white",
+          uploading && "pointer-events-none opacity-50"
+        )}
+      >
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={onFileSelect}
+          accept={accept}
+          className="hidden"
+        />
+        {uploading ? (
+          <div className="flex flex-col items-center gap-2">
+            <span className="h-6 w-6 animate-spin rounded-full border-2 border-amber-600/30 border-t-amber-600" />
+            <p className="text-xs text-stone-500">Uploading file...</p>
+          </div>
+        ) : value ? (
+          <div className="relative group aspect-video w-full max-w-[200px] overflow-hidden rounded-md border border-stone-200">
+            <img src={value} alt="Preview" className="h-full w-full object-cover" />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onChange("");
+              }}
+              className="absolute right-1 top-1 rounded-full bg-stone-900/80 p-1 text-white opacity-0 transition group-hover:opacity-100 hover:bg-rose-600"
+            >
+              <X size={12} />
+            </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center">
+            <div className="mb-2 rounded-full bg-stone-100 p-2 text-stone-500">
+              <Upload size={18} className="mx-auto" />
+            </div>
+            <p className="text-xs font-medium text-stone-700">To upload files drop them here or click.</p>
+            {recommendedSize && (
+              <p className="mt-1 text-[10px] text-stone-400">Recommended size is {recommendedSize}</p>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="mt-2 flex gap-2">
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="Or paste image URL here..."
+          className="flex-1 rounded-lg border border-stone-300 bg-white px-3 py-1.5 text-xs text-stone-900 outline-none transition focus:border-amber-500"
+        />
+      </div>
+      {helperText && <p className="mt-1 text-[10px] text-stone-400">{helperText}</p>}
+    </div>
+  );
 }

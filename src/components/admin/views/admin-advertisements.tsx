@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { Plus, Pencil, Trash2, Megaphone } from "lucide-react";
-import { AdminPage, AdminCard, AdminButton, AdminBadge, AdminInput, AdminSelect, AdminToggle } from "../admin-ui";
+import { AdminPage, AdminCard, AdminButton, AdminBadge, AdminInput, AdminSelect, AdminToggle, AdminImageInput } from "../admin-ui";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
@@ -65,7 +65,13 @@ export function AdminAdvertisements() {
           <DialogTitle className="font-serif text-xl font-semibold text-stone-900">{editing ? "Edit Advertisement" : "New Advertisement"}</DialogTitle>
           <div className="mt-4 space-y-3">
             <AdminInput label="Title" value={form.title as string} onChange={(v) => set("title", v)} />
-            <AdminInput label="Image Path" value={form.image as string} onChange={(v) => set("image", v)} />
+            <AdminImageInput
+              label="Ad Image File"
+              value={form.image as string}
+              onChange={(v) => set("image", v)}
+              recommendedSize="800px X 450px"
+              helperText="[.jpg, .jpeg, .png, .gif Only]"
+            />
             <AdminInput label="Link" value={form.link as string} onChange={(v) => set("link", v)} />
             <AdminSelect label="Placement" value={form.placement as string} onChange={(v) => set("placement", v)} options={["sidebar", "inline", "popup"].map((p) => ({ value: p, label: p }))} />
             <AdminToggle checked={form.isActive as boolean} onChange={(v) => set("isActive", v)} label="Active" />

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { sessions } from "../register/route";
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  const token = req.cookies.get("karji-session")?.value;
-  if (!token) return NextResponse.json({ user: null });
-  const session = sessions.get(token);
-  if (!session) return NextResponse.json({ user: null });
-  return NextResponse.json({ user: session });
+  try {
+    const user = await getCurrentUser(req);
+    return NextResponse.json({ user });
+  } catch {
+    return NextResponse.json({ user: null });
+  }
 }

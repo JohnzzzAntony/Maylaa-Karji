@@ -111,22 +111,35 @@ export function CategoryView({
   return (
     <div className="min-h-screen bg-white">
       {/* Hero banner */}
-      <div className="relative h-[300px] w-full overflow-hidden">
-        <Image src={category.image} alt={category.name} fill sizes="100vw" className="object-cover" priority />
-        <div className="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/40 to-espresso/20" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <nav className="mb-3 flex items-center justify-center gap-2 text-[11px] text-white/60">
-              <button onClick={onBack} className="hover:text-gold">Home</button>
-              <ChevronRight size={11} />
-              <span className="text-white">{category.name}</span>
-            </nav>
-            <h1 className="font-serif text-5xl font-semibold sm:text-6xl">{category.name}</h1>
-            <p className="mt-2 max-w-md text-sm text-white/70">{category.description}</p>
-            <p className="mt-3 text-xs text-gold">{products.length} fragrances in this collection</p>
-          </motion.div>
-        </div>
-      </div>
+      {(() => {
+        let meta = { topDescription: "", completeName: "", bannerImage: "", metaTitle: "", metaKeywords: "", metaDescription: "", published: true };
+        try {
+          meta = JSON.parse(category.description);
+        } catch {
+          meta.topDescription = category.description;
+        }
+        const heroSrc = meta.bannerImage || category.image;
+        const displayDesc = meta.topDescription || category.description;
+
+        return (
+          <div className="relative h-[300px] w-full overflow-hidden">
+            <Image src={heroSrc} alt={category.name} fill sizes="100vw" className="object-cover" priority />
+            <div className="absolute inset-0 bg-gradient-to-t from-espresso/90 via-espresso/40 to-espresso/20" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                <nav className="mb-3 flex items-center justify-center gap-2 text-[11px] text-white/60">
+                  <button onClick={onBack} className="hover:text-gold">Home</button>
+                  <ChevronRight size={11} />
+                  <span className="text-white">{category.name}</span>
+                </nav>
+                <h1 className="font-serif text-5xl font-semibold sm:text-6xl">{category.name}</h1>
+                <p className="mt-2 max-w-md text-sm text-white/70">{displayDesc}</p>
+                <p className="mt-3 text-xs text-gold">{products.length} fragrances in this collection</p>
+              </motion.div>
+            </div>
+          </div>
+        );
+      })()}
 
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <button onClick={onBack} className="mb-6 inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition hover:text-gold">

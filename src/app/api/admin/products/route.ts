@@ -12,7 +12,22 @@ export async function GET(req: NextRequest) {
     include: { brand: true, category: true },
     orderBy: { createdAt: "desc" },
   });
-  return NextResponse.json({ products: products.map((p) => ({ ...p, images: JSON.parse(p.images) })) });
+  return NextResponse.json({
+    products: products.map((p) => {
+      let parsedImages = ["/images/products/future-oud.jpg"];
+      try {
+        parsedImages = JSON.parse(p.images);
+        if (!Array.isArray(parsedImages)) {
+          parsedImages = typeof p.images === "string" ? [p.images] : ["/images/products/future-oud.jpg"];
+        }
+      } catch {
+        if (p.images) {
+          parsedImages = [p.images];
+        }
+      }
+      return { ...p, images: parsedImages };
+    })
+  });
 }
 
 export async function POST(req: NextRequest) {
@@ -44,6 +59,10 @@ export async function POST(req: NextRequest) {
       isArtisanal: !!body.isArtisanal,
       isFeatured: !!body.isFeatured,
       isNew: !!body.isNew,
+      metaTitle: body.metaTitle || null,
+      metaDescription: body.metaDescription || null,
+      metaKeywords: body.metaKeywords || null,
+      ogImage: body.ogImage || null,
     },
   });
   return NextResponse.json({ product });

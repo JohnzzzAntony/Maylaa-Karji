@@ -8,7 +8,18 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const banner = await db.banner.create({ data: { title: body.title, subtitle: body.subtitle || "", image: body.image, link: body.link || "#", position: body.position || "hero", isActive: body.isActive ?? true, sortOrder: Number(body.sortOrder) || 0 } });
+  const banner = await db.banner.create({
+    data: {
+      title: body.title,
+      subtitle: body.subtitle || "",
+      image: body.image,
+      mobileImage: body.mobileImage || "",
+      link: body.link || "#",
+      position: body.position || "hero",
+      isActive: body.isActive ?? true,
+      sortOrder: Number(body.sortOrder) || 0,
+    },
+  });
   return NextResponse.json({ banner });
 }
 

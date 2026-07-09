@@ -2,7 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 export async function GET() {
-  const ads = await db.advertisement.findMany({ orderBy: { createdAt: "desc" } });
+  let ads = await db.advertisement.findMany({ orderBy: { createdAt: "desc" } });
+  if (ads.length === 0) {
+    try {
+      await db.advertisement.create({
+        data: {
+          title: "Exclusive Oud Scent Collection",
+          image: "/images/products/oud-rose.jpg",
+          link: "/category/oud",
+          placement: "sidebar",
+          isActive: true,
+        }
+      });
+      ads = await db.advertisement.findMany({ orderBy: { createdAt: "desc" } });
+    } catch (e) {
+      console.error("Failed to seed default advertisement:", e);
+    }
+  }
   return NextResponse.json({ ads });
 }
 

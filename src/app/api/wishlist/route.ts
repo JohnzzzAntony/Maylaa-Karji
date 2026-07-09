@@ -1,14 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { sessions } from "../auth/register/route";
-
-function getUser(req: NextRequest) {
-  const token = req.cookies.get("karji-session")?.value;
-  return token ? sessions.get(token) : null;
-}
+import { getCurrentUser } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  const user = getUser(req);
+  const user = await getCurrentUser(req);
   if (!user) return NextResponse.json({ items: [] });
   const items = await db.wishlistItem.findMany({
     where: { userId: user.userId },
@@ -19,7 +14,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const user = getUser(req);
+  const user = await getCurrentUser(req);
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   const { productId } = await req.json();
   if (!productId) return NextResponse.json({ error: "productId required" }, { status: 400 });
@@ -28,7 +23,7 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const user = getUser(req);
+  const user = await getCurrentUser(req);
   if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   const productId = req.nextUrl.searchParams.get("productId");
   if (!productId) return NextResponse.json({ error: "productId required" }, { status: 400 });

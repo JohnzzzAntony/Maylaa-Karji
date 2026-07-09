@@ -74,14 +74,8 @@ export function Header({
         </button>
 
         {/* Logo */}
-        <button onClick={onHome} className="flex items-center gap-2.5 shrink-0 cursor-pointer">
-          <div className="relative grid h-10 w-10 place-items-center rounded-full border-2 border-gold">
-            <span className="font-serif text-lg font-bold text-gold">K</span>
-          </div>
-          <div className="hidden flex-col leading-none sm:flex">
-            <span className="font-serif text-xl font-semibold tracking-wide text-foreground">The House Of Karji</span>
-            <span className="text-[9px] font-medium uppercase tracking-[0.3em] text-muted-foreground">Curated Fragrance</span>
-          </div>
+        <button onClick={onHome} className="flex items-center gap-2 shrink-0 cursor-pointer">
+          <img data-src="/images/logo.png" alt="The House Of Karji" className="lazyload h-10 w-auto object-contain" />
         </button>
 
         {/* Nav */}

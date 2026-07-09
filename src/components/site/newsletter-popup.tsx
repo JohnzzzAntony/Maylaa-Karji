@@ -63,7 +63,7 @@ export function NewsletterPopup() {
         <div className="grid md:grid-cols-2">
           {/* Image side */}
           <div className="relative hidden md:block">
-            <img src="/images/hero/hero-main.jpg" alt="Luxury fragrances" className="h-full w-full object-cover" />
+            <img data-src="/images/hero/hero-main.jpg" alt="Luxury fragrances" className="lazyload h-full w-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-espresso/70 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6 text-white">
               <Sparkles size={20} className="text-gold" />

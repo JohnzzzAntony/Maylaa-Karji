@@ -100,14 +100,8 @@ export function Footer({ onNavigate, onOpenCms }: { onNavigate?: (s: string) => 
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
           <div className="col-span-2 md:col-span-1">
-            <a href="/" className="flex items-center gap-2.5">
-              <div className="grid h-10 w-10 place-items-center rounded-full border-2 border-gold">
-                <span className="font-serif text-lg font-bold text-gold">K</span>
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-serif text-xl font-semibold">The House Of Karji</span>
-                <span className="text-[9px] uppercase tracking-[0.3em] text-white/40">Curated Fragrance</span>
-              </div>
+            <a href="/" className="flex items-center gap-2">
+              <img data-src="/images/logo.png" alt="The House Of Karji" className="lazyload h-10 w-auto object-contain brightness-0 invert" />
             </a>
             <p className="mt-4 text-sm text-white/50">
               Curated luxury fragrances from the world&apos;s finest perfume houses. Where heritage meets modern artistry.

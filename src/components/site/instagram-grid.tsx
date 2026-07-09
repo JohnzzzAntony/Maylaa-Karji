@@ -35,7 +35,7 @@ export function InstagramGrid() {
             transition={{ delay: (i % 6) * 0.06 }}
             className="group relative aspect-square overflow-hidden rounded-lg bg-cream"
           >
-            <img src={u.img} alt={u.handle} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+            <img data-src={u.img} alt={u.handle} className="lazyload h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-espresso/70 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               <span className="text-xs font-medium text-white">@{u.handle.replace("@", "")}</span>
               <span className="flex items-center gap-1 text-xs text-white/80">
