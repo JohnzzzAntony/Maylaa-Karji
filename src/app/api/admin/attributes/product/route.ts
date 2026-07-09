@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -5,6 +6,7 @@ export async function GET() {
   const attributes = await db.productAttribute.findMany({
     orderBy: { name: "asc" },
   });
+  revalidatePath("/");
   return NextResponse.json({ attributes });
 }
 
@@ -16,7 +18,8 @@ export async function POST(req: NextRequest) {
     const attribute = await db.productAttribute.create({
       data: { name, description },
     });
-    return NextResponse.json({ attribute });
+    revalidatePath("/");
+  return NextResponse.json({ attribute });
   } catch (error: any) {
     console.error("Create product attribute error:", error);
     return NextResponse.json({ error: "Create failed" }, { status: 500 });
@@ -32,7 +35,8 @@ export async function PUT(req: NextRequest) {
       where: { id },
       data: { name, description },
     });
-    return NextResponse.json({ attribute });
+    revalidatePath("/");
+  return NextResponse.json({ attribute });
   } catch (error: any) {
     console.error("Update product attribute error:", error);
     return NextResponse.json({ error: "Update failed" }, { status: 500 });
@@ -44,5 +48,6 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   
   await db.productAttribute.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }

@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -6,6 +7,7 @@ export async function GET() {
     include: { _count: { select: { products: true } } },
     orderBy: { name: "asc" },
   });
+  revalidatePath("/");
   return NextResponse.json({ brands });
 }
 
@@ -24,7 +26,8 @@ export async function POST(req: NextRequest) {
         logoColor: logoColor || "#B8935A",
       },
     });
-    return NextResponse.json({ brand });
+    revalidatePath("/");
+  return NextResponse.json({ brand });
   } catch (error: any) {
     console.error("Create brand error:", error);
     return NextResponse.json({ error: "Create brand failed" }, { status: 500 });
@@ -49,7 +52,8 @@ export async function PUT(req: NextRequest) {
       where: { id },
       data: update,
     });
-    return NextResponse.json({ brand });
+    revalidatePath("/");
+  return NextResponse.json({ brand });
   } catch (error: any) {
     console.error("Update brand error:", error);
     return NextResponse.json({ error: "Update brand failed" }, { status: 500 });
@@ -66,5 +70,6 @@ export async function DELETE(req: NextRequest) {
   }
   
   await db.brand.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }

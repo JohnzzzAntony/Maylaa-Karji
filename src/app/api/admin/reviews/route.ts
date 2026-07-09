@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -6,6 +7,7 @@ export async function GET() {
     include: { product: { select: { name: true, sku: true } } },
     orderBy: { createdAt: "desc" },
   });
+  revalidatePath("/");
   return NextResponse.json({ reviews });
 }
 
@@ -24,7 +26,8 @@ export async function PUT(req: NextRequest) {
       where: { id },
       data: update,
     });
-    return NextResponse.json({ review });
+    revalidatePath("/");
+  return NextResponse.json({ review });
   } catch (error: any) {
     console.error("Update review error:", error);
     return NextResponse.json({ error: "Update review failed" }, { status: 500 });
@@ -35,5 +38,6 @@ export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   await db.review.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }

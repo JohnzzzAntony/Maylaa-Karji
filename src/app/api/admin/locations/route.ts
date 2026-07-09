@@ -1,8 +1,10 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 export async function GET() {
   const locations = await db.storeLocation.findMany({ orderBy: { sortOrder: "asc" } });
+  revalidatePath("/");
   return NextResponse.json({ locations });
 }
 
@@ -23,6 +25,7 @@ export async function POST(req: NextRequest) {
       sortOrder: Number(body.sortOrder) || 0,
     },
   });
+  revalidatePath("/");
   return NextResponse.json({ location });
 }
 
@@ -43,6 +46,7 @@ export async function PUT(req: NextRequest) {
       sortOrder: Number(data.sortOrder) || 0,
     },
   });
+  revalidatePath("/");
   return NextResponse.json({ location });
 }
 
@@ -50,5 +54,6 @@ export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   await db.storeLocation.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }

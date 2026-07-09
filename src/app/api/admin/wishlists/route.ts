@@ -28,7 +28,8 @@ export async function GET() {
       });
     });
     
-    return NextResponse.json({ wishlists: Object.values(userWishlists) });
+    revalidatePath("/");
+  return NextResponse.json({ wishlists: Object.values(userWishlists) });
   } catch (error: any) {
     console.error("Fetch wishlists error:", error);
     return NextResponse.json({ error: "Failed to fetch wishlists" }, { status: 500 });

@@ -34,7 +34,8 @@ export async function GET() {
       }
     });
     
-    return NextResponse.json({ carts: Object.values(carts) });
+    revalidatePath("/");
+  return NextResponse.json({ carts: Object.values(carts) });
   } catch (error: any) {
     console.error("Fetch carts error:", error);
     return NextResponse.json({ error: "Failed to fetch carts" }, { status: 500 });

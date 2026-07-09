@@ -1,8 +1,10 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
 export async function GET() {
   const offers = await db.bogoOffer.findMany({ orderBy: { createdAt: "desc" } });
+  revalidatePath("/");
   return NextResponse.json({ offers });
 }
 
@@ -25,6 +27,7 @@ export async function POST(req: NextRequest) {
       getProductIds: JSON.stringify(b.getProductIds || []),
     },
   });
+  revalidatePath("/");
   return NextResponse.json({ offer });
 }
 
@@ -48,6 +51,7 @@ export async function PUT(req: NextRequest) {
   if (data.endsAt !== undefined) update.endsAt = data.endsAt ? new Date(data.endsAt) : null;
   
   const offer = await db.bogoOffer.update({ where: { id }, data: update });
+  revalidatePath("/");
   return NextResponse.json({ offer });
 }
 
@@ -55,6 +59,7 @@ export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   await db.bogoOffer.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }
 

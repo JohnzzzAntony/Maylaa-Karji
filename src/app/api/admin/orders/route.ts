@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -13,5 +14,6 @@ export async function PUT(req: NextRequest) {
   const { id, status } = await req.json();
   if (!id || !status) return NextResponse.json({ error: "id and status required" }, { status: 400 });
   const order = await db.order.update({ where: { id }, data: { status } });
+  revalidatePath("/");
   return NextResponse.json({ order });
 }

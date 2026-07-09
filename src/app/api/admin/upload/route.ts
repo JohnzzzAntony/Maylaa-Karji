@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 
@@ -28,7 +29,8 @@ export async function POST(req: NextRequest) {
       folder: "karji_store",
     });
     
-    return NextResponse.json({ url: uploadResult.secure_url });
+    revalidatePath("/");
+  return NextResponse.json({ url: uploadResult.secure_url });
   } catch (error: any) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 });

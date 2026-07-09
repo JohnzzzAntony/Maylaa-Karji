@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -6,6 +7,7 @@ export async function GET() {
     orderBy: [{ displayOrder: "asc" }, { name: "asc" }],
     include: { children: { orderBy: [{ displayOrder: "asc" }, { name: "asc" }] } },
   });
+  revalidatePath("/");
   return NextResponse.json({ categories });
 }
 
@@ -24,6 +26,7 @@ export async function POST(req: NextRequest) {
       showOnHomepage: !!body.showOnHomepage,
     },
   });
+  revalidatePath("/");
   return NextResponse.json({ category });
 }
 
@@ -42,6 +45,7 @@ export async function PUT(req: NextRequest) {
       showOnHomepage: !!data.showOnHomepage,
     },
   });
+  revalidatePath("/");
   return NextResponse.json({ category });
 }
 
@@ -49,5 +53,6 @@ export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   await db.category.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }

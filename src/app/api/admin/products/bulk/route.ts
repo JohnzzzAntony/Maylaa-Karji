@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -22,7 +23,8 @@ export async function PUT(req: NextRequest) {
     );
     
     await db.$transaction(tx);
-    return NextResponse.json({ success: true });
+    revalidatePath("/");
+  return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Bulk update error:", error);
     return NextResponse.json({ error: "Bulk update failed" }, { status: 500 });
@@ -84,7 +86,8 @@ export async function POST(req: NextRequest) {
     });
 
     await db.$transaction(tx);
-    return NextResponse.json({ success: true, count: products.length });
+    revalidatePath("/");
+  return NextResponse.json({ success: true, count: products.length });
   } catch (error: any) {
     console.error("Bulk import error:", error);
     return NextResponse.json({ error: "Bulk import failed" }, { status: 500 });
@@ -103,7 +106,8 @@ export async function DELETE(req: NextRequest) {
       where: { id: { in: ids } },
     });
     
-    return NextResponse.json({ success: true });
+    revalidatePath("/");
+  return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("Bulk delete error:", error);
     return NextResponse.json({ error: "Bulk delete failed" }, { status: 500 });

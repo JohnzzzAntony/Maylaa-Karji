@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 
@@ -66,6 +67,7 @@ export async function POST(req: NextRequest) {
       variants: body.variants || "[]",
     },
   });
+  revalidatePath("/");
   return NextResponse.json({ product });
 }
 
@@ -88,6 +90,7 @@ export async function PUT(req: NextRequest) {
   if (data.badge === "") update.badge = null;
   if (data.variants !== undefined) update.variants = data.variants;
   const product = await db.product.update({ where: { id }, data: update });
+  revalidatePath("/");
   return NextResponse.json({ product });
 }
 
@@ -95,5 +98,6 @@ export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id");
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
   await db.product.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }

@@ -36,7 +36,8 @@ export async function GET() {
     });
     
     const bestsellers = Object.values(sales).sort((a, b) => b.quantity - a.quantity);
-    return NextResponse.json({ bestsellers });
+    revalidatePath("/");
+  return NextResponse.json({ bestsellers });
   } catch (error: any) {
     console.error("Bestsellers report error:", error);
     return NextResponse.json({ error: "Failed to generate report" }, { status: 500 });

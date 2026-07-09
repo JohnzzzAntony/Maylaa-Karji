@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const settings = await db.configSetting.findMany({ orderBy: { group: "asc" } });
+  revalidatePath("/");
   return NextResponse.json({ settings });
 }
 
@@ -26,6 +28,7 @@ export async function PUT(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
   const setting = await db.configSetting.update({ where: { id }, data: { value } });
+  revalidatePath("/");
   return NextResponse.json({ setting });
 }
 
@@ -35,6 +38,7 @@ export async function POST(req: NextRequest) {
 
   const b = await req.json();
   const setting = await db.configSetting.create({ data: { key: b.key, value: b.value || "", label: b.label || b.key, group: b.group || "general" } });
+  revalidatePath("/");
   return NextResponse.json({ setting });
 }
 
@@ -46,5 +50,6 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "id required" }, { status: 400 });
 
   await db.configSetting.delete({ where: { id } });
+  revalidatePath("/");
   return NextResponse.json({ success: true });
 }
