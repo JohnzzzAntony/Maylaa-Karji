@@ -42,10 +42,7 @@ export function Header({
   const setOpen = useCart((s) => s.setOpen);
   const wishCount = useWishlist((s) => s.ids.length);
   const setQuizOpen = useUI((s) => s.setQuizOpen);
-  const setAuthOpen = useUI((s) => s.setAuthOpen);
-  const setWishlistOpen = useUI((s) => s.setWishlistOpen);
   const { user, logout } = useAuth();
-  const [accountMenu, setAccountMenu] = useState(false);
 
   useEffect(() => { useAuth.getState().fetchUser(); }, []);
 
@@ -149,20 +146,12 @@ export function Header({
             <Search size={20} />
           </button>
           <button
-            onClick={() => user ? setAccountMenu((v) => !v) : setAuthOpen(true)}
+            onClick={() => user ? onNavigate("profile") : onNavigate("login")}
             className="grid h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent"
             aria-label="Account"
           >
             <User size={20} />
           </button>
-          {accountMenu && user && (
-            <div className="absolute right-0 top-full z-50 mt-1 w-56 rounded-xl border border-border bg-white p-2 shadow-luxury-lg" onMouseLeave={() => setAccountMenu(false)}>
-              <div className="border-b border-border px-3 py-2"><p className="text-sm font-semibold">{user.name}</p><p className="truncate text-xs text-muted-foreground">{user.email}</p></div>
-              <button onClick={() => { setWishlistOpen(true); setAccountMenu(false); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-foreground transition hover:bg-secondary"><Heart size={15} /> My Wishlist</button>
-              {user.role === "admin" && (<a href="/?admin=1" className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-foreground transition hover:bg-secondary"><Sparkles size={15} /> Admin Panel</a>)}
-              <button onClick={() => { logout(); setAccountMenu(false); toast.success("Signed out"); }} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm text-red-600 transition hover:bg-red-50"><X size={15} /> Sign Out</button>
-            </div>
-          )}
           <button
             onClick={() => setWishlistOpen(true)}
             className="relative hidden h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent sm:grid"
@@ -176,7 +165,7 @@ export function Header({
             )}
           </button>
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => onNavigate("cart")}
             className="relative grid h-10 w-10 place-items-center rounded-lg text-foreground transition hover:bg-accent"
             aria-label="Cart"
           >

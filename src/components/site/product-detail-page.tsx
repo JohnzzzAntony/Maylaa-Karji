@@ -12,22 +12,36 @@ import { ProductCard } from "./product-card";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-const SIZES = [30, 50, 100];
-
+const DEFAULT_SIZES = [30, 50, 100];
 export function ProductDetailPage({ product, related, onBack, onSelectProduct, onQuickView }: {
   product: SerializedProduct; related: SerializedProduct[]; onBack: () => void; onSelectProduct?: (p: SerializedProduct) => void; onQuickView?: (p: SerializedProduct) => void;
 }) {
   const [qty, setQty] = useState(1);
-  const [size, setSize] = useState(product.size || 100);
+  const variants = product.variants && product.variants.length > 0 ? product.variants : [];
+  const availableSizes = variants.length > 0 ? variants.map((v: any) => v.size) : DEFAULT_SIZES;
+  const [size, setSize] = useState(variants.length > 0 ? variants[0].size : (product.size || 100));
+
+  const activeVariant = variants.find((v: any) => v.size === size);
+  const displayPrice = activeVariant ? activeVariant.price : product.price;
+  const displaySku = activeVariant ? activeVariant.sku : product.sku;
+  const displayStock = activeVariant ? activeVariant.stock : product.stock;
+  const displayImage = activeVariant?.image || product.images[0];
+
   const [activeImg, setActiveImg] = useState(0);
   const [tab, setTab] = useState<"description" | "notes" | "shipping" | "reviews">("description");
   const addItem = useCart((s) => s.addItem);
   const wishlistToggle = useWishlist((s) => s.toggle);
   const wished = useWishlist((s) => s.ids.includes(product.id));
 
-  const discount = product.compareAtPrice && product.compareAtPrice > product.price ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100) : 0;
-  const gallery = [product.images[0], product.images[0], product.images[0]];
-  const features = [{ icon: Zap, label: "Concentration", value: product.concentration }, { icon: Award, label: "Longevity", value: "12+ hours" }, { icon: Sparkles, label: "Sillage", value: "Bold" }, { icon: ShieldCheck, label: "Authenticity", value: "Guaranteed" }];
+  const discount = product.compareAtPrice && product.compareAtPrice > displayPrice ? Math.round(((product.compareAtPrice - displayPrice) / product.compareAtPrice) * 100) : 0;
+  
+  // Ensure gallery has valid images
+  const gallery = [displayImage, ...(product.images.filter(img => img !== displayImage))];
+  if (gallery.length === 1) {
+    gallery.push(gallery[0], gallery[0]);
+  } else if (gallery.length === 2) {
+    gallery.push(gallery[0]);
+  }
 
   return (
     <div className="min-h-screen bg-white">
@@ -50,19 +64,19 @@ export function ProductDetailPage({ product, related, onBack, onSelectProduct, o
             <h1 className="mt-2 font-serif text-4xl font-semibold leading-tight sm:text-5xl">{product.name}</h1>
             <div className="mt-3 flex items-center gap-4"><StarRating rating={product.rating} size={18} showValue /><a href="#reviews" className="text-sm text-muted-foreground underline-offset-2 hover:text-gold hover:underline">{product.reviewCount} reviews</a><span className="text-muted-foreground">·</span><span className="text-sm text-muted-foreground">{product.gender}</span></div>
             <p className="mt-5 text-base leading-relaxed text-foreground/75">{product.longDescription}</p>
-            <div className="mt-6 flex items-end gap-3"><span className="font-serif text-4xl font-semibold text-gold">{formatPrice(product.price)}</span>{product.compareAtPrice && product.compareAtPrice > product.price && (<><span className="text-xl text-muted-foreground line-through">{formatPrice(product.compareAtPrice)}</span><span className="rounded-full bg-red-700 px-2.5 py-0.5 text-[11px] font-bold uppercase text-white">Save {discount}%</span></>)}</div>
+            <div className="mt-6 flex items-end gap-3"><span className="font-serif text-4xl font-semibold text-gold">{formatPrice(displayPrice)}</span>{product.compareAtPrice && product.compareAtPrice > displayPrice && (<><span className="text-xl text-muted-foreground line-through">{formatPrice(product.compareAtPrice)}</span><span className="rounded-full bg-red-700 px-2.5 py-0.5 text-[11px] font-bold uppercase text-white">Save {discount}%</span></>)}</div>
             <p className="mt-1 text-xs text-muted-foreground">Inclusive of VAT · Free shipping over Dhs. 500</p>
-            {product.stock <= 15 && (<div className="mt-4 flex items-center gap-2 rounded-lg bg-amber-50 px-4 py-2.5 text-sm text-amber-700"><Zap size={15} /> Hurry up — only <strong className="mx-1">{product.stock}</strong> left in stock!</div>)}
-            <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">{features.map((f) => (<div key={f.label} className="rounded-xl border border-border bg-secondary/50 p-3 text-center"><f.icon size={20} className="mx-auto text-gold" /><p className="mt-1.5 text-[10px] uppercase tracking-widest text-muted-foreground">{f.label}</p><p className="text-xs font-semibold">{f.value}</p></div>))}</div>
-            <div className="mt-6"><p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Size — <span className="text-foreground">{size}ml</span></p><div className="flex gap-2">{SIZES.map((s) => (<button key={s} onClick={() => setSize(s)} className={cn("rounded-lg border px-5 py-2.5 text-sm font-medium transition", size === s ? "border-gold bg-gold text-white" : "border-border hover:border-gold")}>{s}ml{s === 100 && <span className="ml-1.5 text-[9px] opacity-70">Standard</span>}</button>))}</div></div>
+            {displayStock <= 15 && displayStock > 0 && (<div className="mt-4 flex items-center gap-2 rounded-lg bg-amber-50 px-4 py-2.5 text-sm text-amber-700"><Zap size={15} /> Hurry up — only <strong className="mx-1">{displayStock}</strong> left in stock!</div>)}
+            {displayStock === 0 && (<div className="mt-4 flex items-center gap-2 rounded-lg bg-red-50 px-4 py-2.5 text-sm text-red-700"><ShieldCheck size={15} /> Currently Out of Stock</div>)}
+            <div className="mt-6"><p className="mb-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground">Size — <span className="text-foreground">{size}ml</span></p><div className="flex gap-2">{availableSizes.map((s: number) => (<button key={s} onClick={() => { setSize(s); setActiveImg(0); }} className={cn("rounded-lg border px-5 py-2.5 text-sm font-medium transition", size === s ? "border-gold bg-gold text-white" : "border-border hover:border-gold")}>{s}ml{s === 100 && <span className="ml-1.5 text-[9px] opacity-70">Standard</span>}</button>))}</div></div>
             <div className="mt-6 flex items-center gap-3">
               <div className="flex items-center rounded-lg border border-border"><button onClick={() => setQty((q) => Math.max(1, q - 1))} className="grid h-12 w-12 place-items-center text-muted-foreground transition hover:text-foreground" aria-label="Decrease"><Minus size={16} /></button><span className="w-12 text-center text-sm font-semibold">{qty}</span><button onClick={() => setQty((q) => q + 1)} className="grid h-12 w-12 place-items-center text-muted-foreground transition hover:text-foreground" aria-label="Increase"><Plus size={16} /></button></div>
-              <button onClick={() => { for (let i = 0; i < qty; i++) addItem({ id: product.id, slug: product.slug, name: product.name, price: product.price, image: product.images[0], brand: product.brand?.name ?? "", size }); toast.success(qty + " x " + product.name + " added to cart"); }} className="group flex flex-1 items-center justify-center gap-2 rounded-lg bg-espresso py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-gold"><ShoppingBag size={16} /> Add to Cart · {formatPrice(product.price * qty)}</button>
+              <button disabled={displayStock === 0} onClick={() => { for (let i = 0; i < qty; i++) addItem({ id: product.id, slug: product.slug, name: product.name, price: displayPrice, image: displayImage, brand: product.brand?.name ?? "", size }); toast.success(qty + " x " + product.name + " added to cart"); }} className="group flex flex-1 items-center justify-center gap-2 rounded-lg bg-espresso py-4 text-sm font-semibold uppercase tracking-wider text-white transition hover:bg-gold disabled:opacity-50 disabled:hover:bg-espresso"><ShoppingBag size={16} /> {displayStock === 0 ? "Out of Stock" : `Add to Cart · ${formatPrice(displayPrice * qty)}`}</button>
               <button onClick={() => { wishlistToggle(product.id); toast.success(wished ? "Removed from wishlist" : "Added to wishlist"); }} className={cn("grid h-12 w-12 place-items-center rounded-lg border transition", wished ? "border-red-600 text-red-600" : "border-border hover:border-gold")} aria-label="Wishlist"><Heart size={18} fill={wished ? "currentColor" : "none"} /></button>
               <button onClick={() => { navigator.clipboard.writeText(window.location.href); toast.success("Link copied!"); }} className="grid h-12 w-12 place-items-center rounded-lg border border-border transition hover:border-gold" aria-label="Share"><Share2 size={18} /></button>
             </div>
             <div className="mt-6 grid grid-cols-3 gap-3 border-t border-border pt-5">{[{ icon: Truck, label: "Free Shipping", sub: "Over Dhs. 500" }, { icon: RotateCcw, label: "30-Day Returns", sub: "No questions" }, { icon: ShieldCheck, label: "Authentic", sub: "Guaranteed" }].map((a) => (<div key={a.label} className="flex flex-col items-center gap-1 text-center"><a.icon size={22} className="text-gold" /><p className="text-xs font-semibold">{a.label}</p><p className="text-[10px] text-muted-foreground">{a.sub}</p></div>))}</div>
-            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground"><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> SKU: {product.sku}</span><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> {product.concentration}</span><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> {product.gender}</span><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> {product.stock} in stock</span></div>
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 text-xs text-muted-foreground"><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> SKU: {displaySku}</span><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> {product.concentration}</span><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> {product.gender}</span><span className="flex items-center gap-1"><Check size={12} className="text-emerald-deep" /> {displayStock} in stock</span></div>
           </motion.div>
         </div>
         <div id="reviews" className="mt-16 border-t border-border pt-10">

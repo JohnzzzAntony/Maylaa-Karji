@@ -2,13 +2,35 @@ import { getAllProducts, getBrands, getCategories } from "@/lib/data";
 import { db } from "@/lib/db";
 import { HomeClient } from "@/components/site/home-client";
 import { AdminPanel } from "@/components/admin/admin-panel";
+import { cookies } from "next/headers";
+import { supabase } from "@/lib/supabase";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ admin?: string }> }) {
   const sp = await searchParams;
   if (sp.admin === "1") {
-    return <AdminPanel />;
+    const cookieStore = await cookies();
+    const token = cookieStore.get("sb-access-token")?.value;
+    let isAdmin = false;
+
+    if (token) {
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        const dbUser = await db.user.findUnique({ where: { id: user.id } });
+        if (dbUser && (dbUser.role === "admin" || dbUser.role === "superadmin")) {
+          isAdmin = true;
+        }
+      }
+    }
+
+    if (isAdmin) {
+      return <AdminPanel />;
+    } else {
+      // Not an admin, just show normal site (or redirect to home without ?admin=1)
+      redirect("/");
+    }
   }
 
   const [trending, newArrivals, exclusive, bestSellers, artisanal, featured, brands, categories, promos, banners, ads, bogoOffers] = await Promise.all([

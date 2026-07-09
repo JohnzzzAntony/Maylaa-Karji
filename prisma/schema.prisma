@@ -65,6 +65,7 @@ model Product {
   isArtisanal    Boolean  @default(false)
   isFeatured     Boolean  @default(false)
   isNew          Boolean  @default(false)
+  variants       String   @default("[]") // JSON array of variants
   // SEO fields
   metaTitle       String?
   metaDescription String?
@@ -101,6 +102,7 @@ model Order {
   total        Float
   currency     String   @default("AED")
   status       String   @default("pending")
+  paymentMethod String  @default("card")
   address      String   // JSON
   userId       String?
   createdAt    DateTime @default(now())

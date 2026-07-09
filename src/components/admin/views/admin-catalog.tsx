@@ -32,6 +32,7 @@ const EMPTY = {
   size: "100", concentration: "Eau de Parfum", topNotes: "", heartNotes: "", baseNotes: "",
   images: "/images/products/future-oud.jpg", stock: "50", sku: "", badge: "", gender: "Unisex",
   isTrending: false, isExclusive: false, isBestSeller: false, isArtisanal: false, isFeatured: false, isNew: false,
+  variants: "[]",
 };
 
 type CatalogTab = "categories" | "products" | "bulk-edit" | "variants" | "reviews" | "manufacturers" | "low-stock" | "attributes";
@@ -113,7 +114,7 @@ function ManageProducts() {
   
   // Custom states for bulk actions and SEO tab
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [modalTab, setModalTab] = useState<"details" | "seo">("details");
+  const [modalTab, setModalTab] = useState<"details" | "seo" | "variants">("details");
 
   const load = useCallback(() => {
     setLoading(true);
@@ -132,7 +133,8 @@ function ManageProducts() {
   const openCreate = () => {
     setForm({
       ...EMPTY,
-      metaTitle: "", metaDescription: "", metaKeywords: "", ogImage: ""
+      metaTitle: "", metaDescription: "", metaKeywords: "", ogImage: "",
+      variants: "[]",
     });
     setModalTab("details");
     setCreating(true);
@@ -149,6 +151,7 @@ function ManageProducts() {
       metaDescription: (p as any).metaDescription ?? "",
       metaKeywords: (p as any).metaKeywords ?? "",
       ogImage: (p as any).ogImage ?? "",
+      variants: p.variants || "[]",
     });
     setModalTab("details");
     setEditing(p);
@@ -175,6 +178,7 @@ function ManageProducts() {
       isArtisanal: !!form.isArtisanal,
       isFeatured: !!form.isFeatured,
       isNew: !!form.isNew,
+      variants: form.variants,
     };
     try {
       const res = await fetch(`/api/admin/products`, {
@@ -461,6 +465,15 @@ function ManageProducts() {
             >
               SEO & Search Engines
             </button>
+            <button
+              onClick={() => setModalTab("variants")}
+              className={cn(
+                "px-4 py-2 text-xs font-semibold border-b-2 -mb-px transition",
+                modalTab === "variants" ? "border-amber-600 text-amber-600" : "border-transparent text-stone-500 hover:text-stone-900"
+              )}
+            >
+              Variants
+            </button>
           </div>
 
           <div className="space-y-4">
@@ -532,6 +545,20 @@ function ManageProducts() {
                   onChange={(v) => set("ogImage", v)}
                   recommendedSize="1200px X 630px"
                   helperText="Image for social sharing preview."
+                />
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="rounded-lg bg-amber-50 border border-amber-100 p-4 mb-2 text-xs text-amber-800 space-y-1">
+                  <p className="font-semibold">Product Variants</p>
+                  <p>Define variations like different sizes (e.g. 50ml, 100ml) with their own price, SKU, and stock. Must be valid JSON array.</p>
+                </div>
+                <AdminTextarea
+                  label="Variants JSON"
+                  value={form.variants as string}
+                  onChange={(v) => set("variants", v)}
+                  rows={8}
+                  placeholder={`[\n  {\n    "name": "50ml",\n    "price": 450,\n    "compareAtPrice": 500,\n    "sku": "SG-FUTURE-50",\n    "stock": 10\n  }\n]`}
                 />
               </div>
             )}

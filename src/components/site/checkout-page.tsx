@@ -31,7 +31,7 @@ export function CheckoutPage({
     city: "Dubai",
     country: "United Arab Emirates",
   });
-  const [paymentMethod, setPaymentMethod] = useState<"card" | "tabby" | "tamara" | "network">("card");
+  const [paymentMethod, setPaymentMethod] = useState<"card" | "tabby" | "tamara" | "network" | "cod">("card");
   const [placing, setPlacing] = useState(false);
 
   // Card input states
@@ -251,7 +251,7 @@ export function CheckoutPage({
           <div className="rounded-xl border border-stone-200 bg-white p-6 shadow-sm">
             <h2 className="font-serif text-lg font-semibold text-stone-950 border-b border-stone-100 pb-4 mb-5">3. Payment Method</h2>
 
-            <div className="grid gap-3 sm:grid-cols-4">
+            <div className="grid gap-3 sm:grid-cols-5">
               {/* Credit Card option */}
               <button
                 type="button"
@@ -293,7 +293,17 @@ export function CheckoutPage({
                 className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition ${paymentMethod === "network" ? "border-amber-600 bg-amber-600/5 text-stone-950 font-bold" : "border-stone-200 hover:bg-stone-50 text-stone-600"}`}
               >
                 <ShieldCheck size={20} className="mb-2 text-stone-700" />
-                <span className="text-xs uppercase tracking-wider">Network Pay</span>
+                <span className="text-[11px] uppercase tracking-wider">Network</span>
+              </button>
+
+              {/* COD option */}
+              <button
+                type="button"
+                onClick={() => setPaymentMethod("cod")}
+                className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition ${paymentMethod === "cod" ? "border-stone-900 bg-stone-50/50 text-stone-950 font-bold" : "border-stone-200 hover:bg-stone-50 text-stone-600"}`}
+              >
+                <ShoppingBag size={20} className="mb-2 text-stone-700" />
+                <span className="text-[11px] uppercase tracking-wider">COD</span>
               </button>
             </div>
 
@@ -419,6 +429,18 @@ export function CheckoutPage({
                   </div>
                   <p className="text-[10px] text-stone-400 mt-2 italic">
                     API integration active via Merchant Key: {process.env.NEXT_PUBLIC_NETWORK_API_KEY ? "Loaded" : "network_test_api_key_onboarding"}
+                  </p>
+                </div>
+              )}
+
+              {paymentMethod === "cod" && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-1.5">
+                    <ShoppingBag size={16} className="text-emerald-600" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-stone-900">Cash on Delivery</span>
+                  </div>
+                  <p className="text-sm text-stone-700">
+                    Pay with cash or card upon delivery to your address. Please note an additional handling fee of AED 15 may apply for COD orders in some regions.
                   </p>
                 </div>
               )}

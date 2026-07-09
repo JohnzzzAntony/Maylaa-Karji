@@ -17,10 +17,9 @@ import { ScentJournal } from "./scent-journal";
 import { Testimonials } from "./testimonials";
 import { ValueProps } from "./value-props";
 import { Footer } from "./footer";
-const CartDrawer = dynamic(() => import("./cart-drawer").then(mod => mod.CartDrawer), { ssr: false });
+import { CartPage } from "./cart-page";
 const SearchDialog = dynamic(() => import("./search-dialog").then(mod => mod.SearchDialog), { ssr: false });
 const MobileMenu = dynamic(() => import("./mobile-menu").then(mod => mod.MobileMenu), { ssr: false });
-const ProductQuickView = dynamic(() => import("./product-quick-view").then(mod => mod.ProductQuickView), { ssr: false });
 const FragranceQuiz = dynamic(() => import("./fragrance-quiz").then(mod => mod.FragranceQuiz), { ssr: false });
 const LiveChat = dynamic(() => import("./live-chat").then(mod => mod.LiveChat), { ssr: false });
 import { ScrollUtilities } from "./scroll-utilities";
@@ -34,7 +33,9 @@ import { WhyScentGrade } from "./why-scent-grade";
 import { ReviewSummary } from "./review-summary";
 const NewsletterPopup = dynamic(() => import("./newsletter-popup").then(mod => mod.NewsletterPopup), { ssr: false });
 import { ProductDetailPage } from "./product-detail-page";
-const AuthDialog = dynamic(() => import("./auth-dialog").then(mod => mod.AuthDialog), { ssr: false });
+import { LoginPage } from "./login-page";
+import { RegisterPage } from "./register-page";
+import { ProfilePage } from "./profile-page";
 const WishlistDrawer = dynamic(() => import("./wishlist-drawer").then(mod => mod.WishlistDrawer), { ssr: false });
 import { CmsPageView } from "./cms-page-view";
 import { CategoryView } from "./category-view";
@@ -60,7 +61,7 @@ export function HomeClient({
   const [qvOpen, setQvOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [view, setView] = useState<"home" | "shop" | "pdp" | "cms" | "category" | "checkout-auth" | "checkout" | "order-success">("home");
+  const [view, setView] = useState<"home" | "shop" | "pdp" | "cms" | "category" | "cart" | "login" | "register" | "profile" | "checkout-auth" | "checkout" | "order-success">("home");
   const [pdpProduct, setPdpProduct] = useState<SerializedProduct | null>(null);
   const [cmsSlug, setCmsSlug] = useState<string | null>(null);
   const [categorySlug, setCategorySlug] = useState<string | null>(null);
@@ -152,6 +153,11 @@ export function HomeClient({
 
   const handleNavigate = (section: string) => {
     if (section === "gift") { toast.info("Gift cards coming soon! Use code KARJI10 for 10% off your order."); return; }
+    if (["cart", "login", "register", "profile", "checkout-auth"].includes(section)) {
+      setView(section as any);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
     // Check if it's a category slug
     const cat = categories.find((c) => c.slug === section);
     if (cat) { openCategory(section); return; }
@@ -165,7 +171,7 @@ export function HomeClient({
     return Array.from(map.values());
   }, [trending, newArrivals, exclusive, bestSellers, artisanal, featured]);
 
-  const openQuickView = (p: SerializedProduct) => { setQuickView(p); setQvOpen(true); addRecentlyViewed(p.id); };
+  const openQuickView = (p: SerializedProduct) => { openPdp(p); };
 
   useEffect(() => { if (quickView) addRecentlyViewed(quickView.id); }, [quickView, addRecentlyViewed]);
 
@@ -201,6 +207,26 @@ export function HomeClient({
           <CmsPageView slug={cmsSlug} onBack={openHome} />
         ) : view === "category" && currentCategory ? (
           <CategoryView category={currentCategory} products={categoryProducts} onBack={openHome} onQuickView={openQuickView} onViewProduct={openPdp} onNavigateCategory={openCategory} allCategories={categories} />
+        ) : view === "cart" ? (
+          <CartPage 
+            onBack={openHome} 
+            onCheckout={(promo) => {
+              setSelectedPromo(promo);
+              if (user) {
+                setView("checkout");
+              } else {
+                setView("checkout-auth");
+              }
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }} 
+            promos={promos} 
+          />
+        ) : view === "login" ? (
+          <LoginPage onNavigate={(v) => { setView(v as any); window.scrollTo({ top: 0, behavior: "smooth" }); }} onSuccess={() => { setView("home"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+        ) : view === "register" ? (
+          <RegisterPage onNavigate={(v) => { setView(v as any); window.scrollTo({ top: 0, behavior: "smooth" }); }} onSuccess={() => { setView("home"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
+        ) : view === "profile" ? (
+          <ProfilePage onNavigate={(v) => { setView(v as any); window.scrollTo({ top: 0, behavior: "smooth" }); }} onLogout={() => { setView("home"); window.scrollTo({ top: 0, behavior: "smooth" }); }} />
         ) : view === "checkout-auth" ? (
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 flex items-center justify-center min-h-[70vh]">
             <CheckoutAuthGateway
@@ -278,14 +304,11 @@ export function HomeClient({
       <Footer onNavigate={handleNavigate} onOpenCms={openCms} />
 
       {/* Overlays */}
-      <CartDrawer promos={promos} bogoOffers={bogoOffers} />
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
       <MobileMenu open={mobileOpen} onOpenChange={setMobileOpen} />
-      <ProductQuickView product={quickView} open={qvOpen} onOpenChange={setQvOpen} onQuickView={openQuickView} related={related} />
       <FragranceQuiz products={allProducts} />
       <LiveChat />
       <NewsletterPopup />
-      <AuthDialog />
       <WishlistDrawer />
     </div>
   );

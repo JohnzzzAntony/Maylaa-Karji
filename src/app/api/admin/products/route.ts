@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
       metaDescription: body.metaDescription || null,
       metaKeywords: body.metaKeywords || null,
       ogImage: body.ogImage || null,
+      variants: body.variants || "[]",
     },
   });
   return NextResponse.json({ product });
@@ -85,6 +86,7 @@ export async function PUT(req: NextRequest) {
   if (data.isFeatured !== undefined) update.isFeatured = !!data.isFeatured;
   if (data.isNew !== undefined) update.isNew = !!data.isNew;
   if (data.badge === "") update.badge = null;
+  if (data.variants !== undefined) update.variants = data.variants;
   const product = await db.product.update({ where: { id }, data: update });
   return NextResponse.json({ product });
 }

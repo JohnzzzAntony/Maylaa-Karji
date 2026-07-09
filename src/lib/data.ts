@@ -86,7 +86,7 @@ export async function getCategories() {
 export function serializeProduct(p: {
   id: string; name: string; slug: string; description: string; longDescription: string;
   price: number; compareAtPrice: number | null; currency: string; size: number; sizeUnit: string;
-  concentration: string; topNotes: string; heartNotes: string; baseNotes: string; images: string;
+  concentration: string; topNotes: string; heartNotes: string; baseNotes: string; images: string; variants: string;
   rating: number; reviewCount: number; stock: number; sku: string; badge: string | null; gender: string;
   isTrending: boolean; isExclusive: boolean; isBestSeller: boolean; isArtisanal: boolean; isFeatured: boolean; isNew: boolean;
   brand?: { id: string; name: string; slug: string; country: string; description: string; logoColor: string };
@@ -96,6 +96,7 @@ export function serializeProduct(p: {
   return {
     ...p,
     images: JSON.parse(p.images) as string[],
+    variants: (function() { try { return JSON.parse(p.variants || "[]") as Array<{size: number, price: number, stock: number, sku: string, image?: string}>; } catch { return []; } })(),
     compareAtPrice: p.compareAtPrice ?? null,
     badge: p.badge ?? null,
     brand: p.brand ?? undefined,
