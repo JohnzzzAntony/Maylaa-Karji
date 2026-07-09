@@ -49,7 +49,7 @@ import { CheckoutAuthGateway } from "./checkout-auth-gateway";
 import { Check } from "lucide-react";
 
 type Brand = { id: string; name: string; slug: string; country: string; description: string; logoColor: string };
-type Category = { id: string; name: string; slug: string; description: string; image: string };
+type Category = { id: string; name: string; slug: string; description: string; image: string; showOnHomepage?: boolean };
 type Promo = { id: string; code: string; type: string; value: number; minSpend: number };
 
 export function HomeClient({
@@ -271,7 +271,7 @@ export function HomeClient({
         ) : (
           <>
             <HeroCarousel featured={featured} banners={banners} />
-            <CategoryShowcase categories={categories} onNavigateCategory={openCategory} />
+            <CategoryShowcase categories={categories.filter(c => c.showOnHomepage)} onNavigateCategory={openCategory} />
             {/* Inline advertisements from DB */}
             <AdDisplay ads={ads} placement="inline" />
             <div id="products" />
