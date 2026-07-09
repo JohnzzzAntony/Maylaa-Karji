@@ -1,0 +1,17 @@
+<div class="section">
+  <div class="page-width">
+    <div class="page-heading"><h1>Collections</h1></div>
+    <div class="collection-list">
+      {%- for collection in collections -%}
+        <a href="{{ collection.url }}" class="collection-list__item">
+          {%- if collection.featured_image -%}
+            <img src="{{ collection.featured_image | image_url: width: 600 }}" alt="{{ collection.title | escape }}" width="600" height="450" loading="lazy">
+          {%- else -%}
+            {{ 'collection-1' | placeholder_svg_tag: '' }}
+          {%- endif -%}
+          <span class="collection-list__label">{{ collection.title }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
